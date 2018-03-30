@@ -1,0 +1,10 @@
+{
+  "name": "elm_slides",
+  "version": "1.0.0",
+  "description": "Slides presented with Elm!",
+  "main": "index.js",
+  "repository": "https://github.com/ymtszw/elm_slides",
+  "author": "ymtszw",
+  "license": "MIT",
+  "private": false
+}
