@@ -39,9 +39,8 @@
 }
 
 .reveal .slides .slide {
-  transition: all 600ms 100ms ease-in-out;
   min-height: 50vh;
-  max-height: 80vh;
+  width: 100%;
 }
 
 .reveal .slides .slide.is-active {
