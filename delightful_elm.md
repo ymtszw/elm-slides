@@ -2,7 +2,7 @@
 
 [ymtszw][twitter]
 
-@[ML DAY #1][mlday1], 2018/03/31
+@[ML DAY #1][mlday1] LT, 2018/03/31
 
 [mlday1]: https://ml-lang.connpass.com/event/78199/
 [twitter]: https://twitter.com/gada_twt
