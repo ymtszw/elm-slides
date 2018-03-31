@@ -6262,6 +6262,10 @@ return {
 
 }();
 
+var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
+var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
+var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
 var _elm_lang$core$Tuple$mapSecond = F2(
 	function (func, _p0) {
 		var _p1 = _p0;
@@ -6305,6 +6309,192 @@ var _elm_lang$core$Regex$AtMost = function (a) {
 	return {ctor: 'AtMost', _0: a};
 };
 var _elm_lang$core$Regex$All = {ctor: 'All'};
+
+var _elm_lang$dom$Native_Dom = function() {
+
+var fakeNode = {
+	addEventListener: function() {},
+	removeEventListener: function() {}
+};
+
+var onDocument = on(typeof document !== 'undefined' ? document : fakeNode);
+var onWindow = on(typeof window !== 'undefined' ? window : fakeNode);
+
+function on(node)
+{
+	return function(eventName, decoder, toTask)
+	{
+		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
+
+			function performTask(event)
+			{
+				var result = A2(_elm_lang$core$Json_Decode$decodeValue, decoder, event);
+				if (result.ctor === 'Ok')
+				{
+					_elm_lang$core$Native_Scheduler.rawSpawn(toTask(result._0));
+				}
+			}
+
+			node.addEventListener(eventName, performTask);
+
+			return function()
+			{
+				node.removeEventListener(eventName, performTask);
+			};
+		});
+	};
+}
+
+var rAF = typeof requestAnimationFrame !== 'undefined'
+	? requestAnimationFrame
+	: function(callback) { callback(); };
+
+function withNode(id, doStuff)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		rAF(function()
+		{
+			var node = document.getElementById(id);
+			if (node === null)
+			{
+				callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'NotFound', _0: id }));
+				return;
+			}
+			callback(_elm_lang$core$Native_Scheduler.succeed(doStuff(node)));
+		});
+	});
+}
+
+
+// FOCUS
+
+function focus(id)
+{
+	return withNode(id, function(node) {
+		node.focus();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function blur(id)
+{
+	return withNode(id, function(node) {
+		node.blur();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SCROLLING
+
+function getScrollTop(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollTop;
+	});
+}
+
+function setScrollTop(id, desiredScrollTop)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = desiredScrollTop;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toBottom(id)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = node.scrollHeight;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function getScrollLeft(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollLeft;
+	});
+}
+
+function setScrollLeft(id, desiredScrollLeft)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = desiredScrollLeft;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toRight(id)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = node.scrollWidth;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SIZE
+
+function width(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollWidth;
+			case 'VisibleContent':
+				return node.clientWidth;
+			case 'VisibleContentWithBorders':
+				return node.offsetWidth;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.right - rect.left;
+		}
+	});
+}
+
+function height(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollHeight;
+			case 'VisibleContent':
+				return node.clientHeight;
+			case 'VisibleContentWithBorders':
+				return node.offsetHeight;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.bottom - rect.top;
+		}
+	});
+}
+
+return {
+	onDocument: F3(onDocument),
+	onWindow: F3(onWindow),
+
+	focus: focus,
+	blur: blur,
+
+	getScrollTop: getScrollTop,
+	setScrollTop: F2(setScrollTop),
+	getScrollLeft: getScrollLeft,
+	setScrollLeft: F2(setScrollLeft),
+	toBottom: toBottom,
+	toRight: toRight,
+
+	height: F2(height),
+	width: F2(width)
+};
+
+}();
+
+var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
+var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
 
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrap;
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrapWithFlags;
@@ -8694,121 +8884,6 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
-var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
-var _elm_lang$html$Html_Events$targetChecked = A2(
-	_elm_lang$core$Json_Decode$at,
-	{
-		ctor: '::',
-		_0: 'target',
-		_1: {
-			ctor: '::',
-			_0: 'checked',
-			_1: {ctor: '[]'}
-		}
-	},
-	_elm_lang$core$Json_Decode$bool);
-var _elm_lang$html$Html_Events$targetValue = A2(
-	_elm_lang$core$Json_Decode$at,
-	{
-		ctor: '::',
-		_0: 'target',
-		_1: {
-			ctor: '::',
-			_0: 'value',
-			_1: {ctor: '[]'}
-		}
-	},
-	_elm_lang$core$Json_Decode$string);
-var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
-var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
-var _elm_lang$html$Html_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
-var _elm_lang$html$Html_Events$onFocus = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'focus',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onBlur = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'blur',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onSubmitOptions = _elm_lang$core$Native_Utils.update(
-	_elm_lang$html$Html_Events$defaultOptions,
-	{preventDefault: true});
-var _elm_lang$html$Html_Events$onSubmit = function (msg) {
-	return A3(
-		_elm_lang$html$Html_Events$onWithOptions,
-		'submit',
-		_elm_lang$html$Html_Events$onSubmitOptions,
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onCheck = function (tagger) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'change',
-		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetChecked));
-};
-var _elm_lang$html$Html_Events$onInput = function (tagger) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'input',
-		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetValue));
-};
-var _elm_lang$html$Html_Events$onMouseOut = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'mouseout',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onMouseOver = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'mouseover',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onMouseLeave = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'mouseleave',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onMouseEnter = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'mouseenter',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onMouseUp = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'mouseup',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onMouseDown = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'mousedown',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onDoubleClick = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'dblclick',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$onClick = function (msg) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'click',
-		_elm_lang$core$Json_Decode$succeed(msg));
-};
-var _elm_lang$html$Html_Events$Options = F2(
-	function (a, b) {
-		return {stopPropagation: a, preventDefault: b};
-	});
-
 var _elm_lang$html$Html_Lazy$lazy3 = _elm_lang$virtual_dom$VirtualDom$lazy3;
 var _elm_lang$html$Html_Lazy$lazy2 = _elm_lang$virtual_dom$VirtualDom$lazy2;
 var _elm_lang$html$Html_Lazy$lazy = _elm_lang$virtual_dom$VirtualDom$lazy;
@@ -9174,6 +9249,408 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
+var _elm_lang$navigation$Native_Navigation = function() {
+
+
+// FAKE NAVIGATION
+
+function go(n)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		if (n !== 0)
+		{
+			history.go(n);
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+function pushState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.pushState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+function replaceState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.replaceState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+
+// REAL NAVIGATION
+
+function reloadPage(skipCache)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		document.location.reload(skipCache);
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+function setLocation(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		try
+		{
+			window.location = url;
+		}
+		catch(err)
+		{
+			// Only Firefox can throw a NS_ERROR_MALFORMED_URI exception here.
+			// Other browsers reload the page, so let's be consistent about that.
+			document.location.reload(false);
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+
+// GET LOCATION
+
+function getLocation()
+{
+	var location = document.location;
+
+	return {
+		href: location.href,
+		host: location.host,
+		hostname: location.hostname,
+		protocol: location.protocol,
+		origin: location.origin,
+		port_: location.port,
+		pathname: location.pathname,
+		search: location.search,
+		hash: location.hash,
+		username: location.username,
+		password: location.password
+	};
+}
+
+
+// DETECT IE11 PROBLEMS
+
+function isInternetExplorer11()
+{
+	return window.navigator.userAgent.indexOf('Trident') !== -1;
+}
+
+
+return {
+	go: go,
+	setLocation: setLocation,
+	reloadPage: reloadPage,
+	pushState: pushState,
+	replaceState: replaceState,
+	getLocation: getLocation,
+	isInternetExplorer11: isInternetExplorer11
+};
+
+}();
+
+var _elm_lang$navigation$Navigation$replaceState = _elm_lang$navigation$Native_Navigation.replaceState;
+var _elm_lang$navigation$Navigation$pushState = _elm_lang$navigation$Native_Navigation.pushState;
+var _elm_lang$navigation$Navigation$go = _elm_lang$navigation$Native_Navigation.go;
+var _elm_lang$navigation$Navigation$reloadPage = _elm_lang$navigation$Native_Navigation.reloadPage;
+var _elm_lang$navigation$Navigation$setLocation = _elm_lang$navigation$Native_Navigation.setLocation;
+var _elm_lang$navigation$Navigation_ops = _elm_lang$navigation$Navigation_ops || {};
+_elm_lang$navigation$Navigation_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p0) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$navigation$Navigation$notify = F3(
+	function (router, subs, location) {
+		var send = function (_p1) {
+			var _p2 = _p1;
+			return A2(
+				_elm_lang$core$Platform$sendToApp,
+				router,
+				_p2._0(location));
+		};
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(_elm_lang$core$List$map, send, subs)),
+			_elm_lang$core$Task$succeed(
+				{ctor: '_Tuple0'}));
+	});
+var _elm_lang$navigation$Navigation$cmdHelp = F3(
+	function (router, subs, cmd) {
+		var _p3 = cmd;
+		switch (_p3.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$go(_p3._0);
+			case 'New':
+				return A2(
+					_elm_lang$core$Task$andThen,
+					A2(_elm_lang$navigation$Navigation$notify, router, subs),
+					_elm_lang$navigation$Navigation$pushState(_p3._0));
+			case 'Modify':
+				return A2(
+					_elm_lang$core$Task$andThen,
+					A2(_elm_lang$navigation$Navigation$notify, router, subs),
+					_elm_lang$navigation$Navigation$replaceState(_p3._0));
+			case 'Visit':
+				return _elm_lang$navigation$Navigation$setLocation(_p3._0);
+			default:
+				return _elm_lang$navigation$Navigation$reloadPage(_p3._0);
+		}
+	});
+var _elm_lang$navigation$Navigation$killPopWatcher = function (popWatcher) {
+	var _p4 = popWatcher;
+	if (_p4.ctor === 'Normal') {
+		return _elm_lang$core$Process$kill(_p4._0);
+	} else {
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Process$kill(_p4._0),
+			_elm_lang$core$Process$kill(_p4._1));
+	}
+};
+var _elm_lang$navigation$Navigation$onSelfMsg = F3(
+	function (router, location, state) {
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			A3(_elm_lang$navigation$Navigation$notify, router, state.subs, location),
+			_elm_lang$core$Task$succeed(state));
+	});
+var _elm_lang$navigation$Navigation$subscription = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$command = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$Location = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return {href: a, host: b, hostname: c, protocol: d, origin: e, port_: f, pathname: g, search: h, hash: i, username: j, password: k};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _elm_lang$navigation$Navigation$State = F2(
+	function (a, b) {
+		return {subs: a, popWatcher: b};
+	});
+var _elm_lang$navigation$Navigation$init = _elm_lang$core$Task$succeed(
+	A2(
+		_elm_lang$navigation$Navigation$State,
+		{ctor: '[]'},
+		_elm_lang$core$Maybe$Nothing));
+var _elm_lang$navigation$Navigation$Reload = function (a) {
+	return {ctor: 'Reload', _0: a};
+};
+var _elm_lang$navigation$Navigation$reload = _elm_lang$navigation$Navigation$command(
+	_elm_lang$navigation$Navigation$Reload(false));
+var _elm_lang$navigation$Navigation$reloadAndSkipCache = _elm_lang$navigation$Navigation$command(
+	_elm_lang$navigation$Navigation$Reload(true));
+var _elm_lang$navigation$Navigation$Visit = function (a) {
+	return {ctor: 'Visit', _0: a};
+};
+var _elm_lang$navigation$Navigation$load = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Visit(url));
+};
+var _elm_lang$navigation$Navigation$Modify = function (a) {
+	return {ctor: 'Modify', _0: a};
+};
+var _elm_lang$navigation$Navigation$modifyUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Modify(url));
+};
+var _elm_lang$navigation$Navigation$New = function (a) {
+	return {ctor: 'New', _0: a};
+};
+var _elm_lang$navigation$Navigation$newUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$New(url));
+};
+var _elm_lang$navigation$Navigation$Jump = function (a) {
+	return {ctor: 'Jump', _0: a};
+};
+var _elm_lang$navigation$Navigation$back = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(0 - n));
+};
+var _elm_lang$navigation$Navigation$forward = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(n));
+};
+var _elm_lang$navigation$Navigation$cmdMap = F2(
+	function (_p5, myCmd) {
+		var _p6 = myCmd;
+		switch (_p6.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$Jump(_p6._0);
+			case 'New':
+				return _elm_lang$navigation$Navigation$New(_p6._0);
+			case 'Modify':
+				return _elm_lang$navigation$Navigation$Modify(_p6._0);
+			case 'Visit':
+				return _elm_lang$navigation$Navigation$Visit(_p6._0);
+			default:
+				return _elm_lang$navigation$Navigation$Reload(_p6._0);
+		}
+	});
+var _elm_lang$navigation$Navigation$Monitor = function (a) {
+	return {ctor: 'Monitor', _0: a};
+};
+var _elm_lang$navigation$Navigation$program = F2(
+	function (locationToMessage, stuff) {
+		var init = stuff.init(
+			_elm_lang$navigation$Native_Navigation.getLocation(
+				{ctor: '_Tuple0'}));
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
+				{
+					ctor: '::',
+					_0: _elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(locationToMessage)),
+					_1: {
+						ctor: '::',
+						_0: stuff.subscriptions(model),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		return _elm_lang$html$Html$program(
+			{init: init, view: stuff.view, update: stuff.update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$programWithFlags = F2(
+	function (locationToMessage, stuff) {
+		var init = function (flags) {
+			return A2(
+				stuff.init,
+				flags,
+				_elm_lang$navigation$Native_Navigation.getLocation(
+					{ctor: '_Tuple0'}));
+		};
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
+				{
+					ctor: '::',
+					_0: _elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(locationToMessage)),
+					_1: {
+						ctor: '::',
+						_0: stuff.subscriptions(model),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		return _elm_lang$html$Html$programWithFlags(
+			{init: init, view: stuff.view, update: stuff.update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$subMap = F2(
+	function (func, _p7) {
+		var _p8 = _p7;
+		return _elm_lang$navigation$Navigation$Monitor(
+			function (_p9) {
+				return func(
+					_p8._0(_p9));
+			});
+	});
+var _elm_lang$navigation$Navigation$InternetExplorer = F2(
+	function (a, b) {
+		return {ctor: 'InternetExplorer', _0: a, _1: b};
+	});
+var _elm_lang$navigation$Navigation$Normal = function (a) {
+	return {ctor: 'Normal', _0: a};
+};
+var _elm_lang$navigation$Navigation$spawnPopWatcher = function (router) {
+	var reportLocation = function (_p10) {
+		return A2(
+			_elm_lang$core$Platform$sendToSelf,
+			router,
+			_elm_lang$navigation$Native_Navigation.getLocation(
+				{ctor: '_Tuple0'}));
+	};
+	return _elm_lang$navigation$Native_Navigation.isInternetExplorer11(
+		{ctor: '_Tuple0'}) ? A3(
+		_elm_lang$core$Task$map2,
+		_elm_lang$navigation$Navigation$InternetExplorer,
+		_elm_lang$core$Process$spawn(
+			A3(_elm_lang$dom$Dom_LowLevel$onWindow, 'popstate', _elm_lang$core$Json_Decode$value, reportLocation)),
+		_elm_lang$core$Process$spawn(
+			A3(_elm_lang$dom$Dom_LowLevel$onWindow, 'hashchange', _elm_lang$core$Json_Decode$value, reportLocation))) : A2(
+		_elm_lang$core$Task$map,
+		_elm_lang$navigation$Navigation$Normal,
+		_elm_lang$core$Process$spawn(
+			A3(_elm_lang$dom$Dom_LowLevel$onWindow, 'popstate', _elm_lang$core$Json_Decode$value, reportLocation)));
+};
+var _elm_lang$navigation$Navigation$onEffects = F4(
+	function (router, cmds, subs, _p11) {
+		var _p12 = _p11;
+		var _p15 = _p12.popWatcher;
+		var stepState = function () {
+			var _p13 = {ctor: '_Tuple2', _0: subs, _1: _p15};
+			_v6_2:
+			do {
+				if (_p13._0.ctor === '[]') {
+					if (_p13._1.ctor === 'Just') {
+						return A2(
+							_elm_lang$navigation$Navigation_ops['&>'],
+							_elm_lang$navigation$Navigation$killPopWatcher(_p13._1._0),
+							_elm_lang$core$Task$succeed(
+								A2(_elm_lang$navigation$Navigation$State, subs, _elm_lang$core$Maybe$Nothing)));
+					} else {
+						break _v6_2;
+					}
+				} else {
+					if (_p13._1.ctor === 'Nothing') {
+						return A2(
+							_elm_lang$core$Task$map,
+							function (_p14) {
+								return A2(
+									_elm_lang$navigation$Navigation$State,
+									subs,
+									_elm_lang$core$Maybe$Just(_p14));
+							},
+							_elm_lang$navigation$Navigation$spawnPopWatcher(router));
+					} else {
+						break _v6_2;
+					}
+				}
+			} while(false);
+			return _elm_lang$core$Task$succeed(
+				A2(_elm_lang$navigation$Navigation$State, subs, _p15));
+		}();
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					A2(_elm_lang$navigation$Navigation$cmdHelp, router, subs),
+					cmds)),
+			stepState);
+	});
+_elm_lang$core$Native_Platform.effectManagers['Navigation'] = {pkg: 'elm-lang/navigation', init: _elm_lang$navigation$Navigation$init, onEffects: _elm_lang$navigation$Navigation$onEffects, onSelfMsg: _elm_lang$navigation$Navigation$onSelfMsg, tag: 'fx', cmdMap: _elm_lang$navigation$Navigation$cmdMap, subMap: _elm_lang$navigation$Navigation$subMap};
+
 var _evancz$elm_markdown$Native_Markdown = function() {
 
 
@@ -9318,19 +9795,98 @@ var _ymtszw$elm_slides$Type$Model = F3(
 	function (a, b, c) {
 		return {index: a, current: b, cursor: c};
 	});
-var _ymtszw$elm_slides$Type$CursorTo = function (a) {
-	return {ctor: 'CursorTo', _0: a};
-};
-var _ymtszw$elm_slides$Type$OpenFile = function (a) {
-	return {ctor: 'OpenFile', _0: a};
-};
 var _ymtszw$elm_slides$Type$ClientRes = function (a) {
 	return {ctor: 'ClientRes', _0: a};
+};
+var _ymtszw$elm_slides$Type$Loc = function (a) {
+	return {ctor: 'Loc', _0: a};
 };
 var _ymtszw$elm_slides$Type$NoOp = {ctor: 'NoOp'};
 var _ymtszw$elm_slides$Type$GetMarkdownFile = F2(
 	function (a, b) {
 		return {ctor: 'GetMarkdownFile', _0: a, _1: b};
+	});
+
+var _ymtszw$elm_slides$File$separator = _elm_lang$core$Regex$regex('---+\\s+');
+var _ymtszw$elm_slides$File$chopFile = function (raw) {
+	return A3(_elm_lang$core$Regex$split, _elm_lang$core$Regex$All, _ymtszw$elm_slides$File$separator, raw);
+};
+var _ymtszw$elm_slides$File$getMarkdown = function (path) {
+	return A2(
+		_elm_lang$http$Http$send,
+		function (_p0) {
+			return _ymtszw$elm_slides$Type$ClientRes(
+				A2(
+					_elm_lang$core$Result$map,
+					function (_p1) {
+						return A2(
+							_ymtszw$elm_slides$Type$GetMarkdownFile,
+							path,
+							_ymtszw$elm_slides$File$chopFile(_p1));
+					},
+					_p0));
+		},
+		_elm_lang$http$Http$getString(path));
+};
+
+var _ymtszw$elm_slides$Router$fileAndCursor = function (hash) {
+	var _p0 = A2(
+		_elm_lang$core$Debug$log,
+		'path',
+		A2(
+			_elm_lang$core$String$split,
+			'/',
+			A2(_elm_lang$core$String$dropLeft, 1, hash)));
+	if (_p0.ctor === '[]') {
+		return {ctor: '_Tuple2', _0: 'README.md', _1: 0};
+	} else {
+		if (_p0._1.ctor === '[]') {
+			if (_p0._0 === '') {
+				return {ctor: '_Tuple2', _0: 'README.md', _1: 0};
+			} else {
+				return {ctor: '_Tuple2', _0: _p0._0, _1: 0};
+			}
+		} else {
+			var _p2 = _p0._0;
+			var _p1 = _elm_lang$core$String$toInt(_p0._1._0);
+			if (_p1.ctor === 'Ok') {
+				return {ctor: '_Tuple2', _0: _p2, _1: _p1._0 - 1};
+			} else {
+				return {ctor: '_Tuple2', _0: _p2, _1: 0};
+			}
+		}
+	}
+};
+var _ymtszw$elm_slides$Router$route = F2(
+	function (_p4, _p3) {
+		var _p5 = _p4;
+		var _p9 = _p5;
+		var _p6 = _p3;
+		var _p7 = _ymtszw$elm_slides$Router$fileAndCursor(_p6.hash);
+		var filename = _p7._0;
+		var cursor = _p7._1;
+		var _p8 = A2(_elm_lang$core$Dict$get, filename, _p5.index);
+		if ((_p8.ctor === 'Just') && (_p8._0.ctor === '::')) {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					_p9,
+					{
+						current: _elm_lang$core$Maybe$Just(
+							{ctor: '_Tuple2', _0: filename, _1: _p8._0}),
+						cursor: cursor
+					}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					_p9,
+					{cursor: cursor}),
+				_1: _ymtszw$elm_slides$File$getMarkdown(filename)
+			};
+		}
 	});
 
 var _ymtszw$elm_slides$View$page = F3(
@@ -9371,16 +9927,36 @@ var _ymtszw$elm_slides$View$page = F3(
 			},
 			contents));
 	});
-var _ymtszw$elm_slides$View$withDisabled = F2(
-	function (disabled_, others) {
-		return disabled_ ? {
-			ctor: '::',
-			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'disabled', 'disabled'),
-			_1: others
-		} : others;
+var _ymtszw$elm_slides$View$locatorButton = F5(
+	function (disabled_, filename, toCursor, others, children) {
+		return disabled_ ? A2(
+			_elm_lang$html$Html$span,
+			{
+				ctor: '::',
+				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'disabled', 'disabled'),
+				_1: others
+			},
+			children) : A2(
+			_elm_lang$html$Html$a,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$href(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'#',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							filename,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'/',
+								_elm_lang$core$Basics$toString(toCursor))))),
+				_1: others
+			},
+			children);
 	});
-var _ymtszw$elm_slides$View$locator = F2(
-	function (max, cursor) {
+var _ymtszw$elm_slides$View$locator = F3(
+	function (max, filename, cursor) {
 		return A2(
 			_elm_lang$html$Html$nav,
 			{
@@ -9398,21 +9974,16 @@ var _ymtszw$elm_slides$View$locator = F2(
 			},
 			{
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$button,
-					A2(
-						_ymtszw$elm_slides$View$withDisabled,
-						_elm_lang$core$Native_Utils.cmp(cursor, 0) < 1,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('pagination-previous'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(
-									_ymtszw$elm_slides$Type$CursorTo(cursor - 1)),
-								_1: {ctor: '[]'}
-							}
-						}),
+				_0: A5(
+					_ymtszw$elm_slides$View$locatorButton,
+					_elm_lang$core$Native_Utils.cmp(cursor, 0) < 1,
+					filename,
+					cursor,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('pagination-previous'),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: A2(
@@ -9451,21 +10022,16 @@ var _ymtszw$elm_slides$View$locator = F2(
 						}),
 					_1: {
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$button,
-							A2(
-								_ymtszw$elm_slides$View$withDisabled,
-								_elm_lang$core$Native_Utils.cmp(cursor, max - 1) > -1,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('pagination-next'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onClick(
-											_ymtszw$elm_slides$Type$CursorTo(cursor + 1)),
-										_1: {ctor: '[]'}
-									}
-								}),
+						_0: A5(
+							_ymtszw$elm_slides$View$locatorButton,
+							_elm_lang$core$Native_Utils.cmp(cursor, max - 1) > -1,
+							filename,
+							cursor + 2,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('pagination-next'),
+								_1: {ctor: '[]'}
+							},
 							{
 								ctor: '::',
 								_0: A2(
@@ -9498,9 +10064,10 @@ var _ymtszw$elm_slides$View$rendered = function (_p0) {
 			},
 			{
 				ctor: '::',
-				_0: A2(
+				_0: A3(
 					_ymtszw$elm_slides$View$locator,
 					_elm_lang$core$List$length(_p3),
+					_p2._0._0,
 					_p4),
 				_1: {
 					ctor: '::',
@@ -9604,8 +10171,8 @@ var _ymtszw$elm_slides$View$view = function (_p5) {
 																_elm_lang$html$Html$a,
 																{
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Events$onClick(
-																		_ymtszw$elm_slides$Type$OpenFile(filename)),
+																	_0: _elm_lang$html$Html_Attributes$href(
+																		A2(_elm_lang$core$Basics_ops['++'], '#', filename)),
 																	_1: {ctor: '[]'}
 																},
 																{
@@ -9703,93 +10270,41 @@ var _ymtszw$elm_slides$View$view = function (_p5) {
 		});
 };
 
-var _ymtszw$elm_slides$Main$separator = _elm_lang$core$Regex$regex('---+\\s+');
-var _ymtszw$elm_slides$Main$chopFile = function (raw) {
-	return A3(_elm_lang$core$Regex$split, _elm_lang$core$Regex$All, _ymtszw$elm_slides$Main$separator, raw);
-};
-var _ymtszw$elm_slides$Main$getMarkdownFile = function (path) {
-	return A2(
-		_elm_lang$http$Http$send,
-		function (_p0) {
-			return _ymtszw$elm_slides$Type$ClientRes(
-				A2(
-					_elm_lang$core$Result$map,
-					function (_p1) {
-						return A2(
-							_ymtszw$elm_slides$Type$GetMarkdownFile,
-							path,
-							_ymtszw$elm_slides$Main$chopFile(_p1));
-					},
-					_p0));
-		},
-		_elm_lang$http$Http$getString(path));
-};
 var _ymtszw$elm_slides$Main$update = F2(
-	function (msg, _p2) {
-		var _p3 = _p2;
-		var _p10 = _p3;
-		var _p9 = _p3.index;
-		var _p4 = msg;
-		switch (_p4.ctor) {
+	function (msg, _p0) {
+		var _p1 = _p0;
+		var _p5 = _p1;
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'NoOp':
-				return {ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'ClientRes':
-				if (_p4._0.ctor === 'Ok') {
-					var _p6 = _p4._0._0._0;
-					var _p5 = _p4._0._0._1;
+				return {ctor: '_Tuple2', _0: _p5, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'Loc':
+				return A2(_ymtszw$elm_slides$Router$route, _p5, _p2._0);
+			default:
+				if (_p2._0.ctor === 'Ok') {
+					var _p4 = _p2._0._0._0;
+					var _p3 = _p2._0._0._1;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
-							_p10,
+							_p5,
 							{
-								index: A3(_elm_lang$core$Dict$insert, _p6, _p5, _p9),
+								index: A3(_elm_lang$core$Dict$insert, _p4, _p3, _p1.index),
 								current: _elm_lang$core$Maybe$Just(
-									{ctor: '_Tuple2', _0: _p6, _1: _p5}),
-								cursor: 0
+									{ctor: '_Tuple2', _0: _p4, _1: _p3})
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					return A2(
 						_elm_lang$core$Basics$always,
-						{ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none},
-						A2(_elm_lang$core$Debug$log, 'Http Error', _p4._0._0));
+						{ctor: '_Tuple2', _0: _p5, _1: _elm_lang$core$Platform_Cmd$none},
+						A2(_elm_lang$core$Debug$log, 'Http Error', _p2._0._0));
 				}
-			case 'OpenFile':
-				var _p8 = _p4._0;
-				var _p7 = A2(_elm_lang$core$Dict$get, _p8, _p9);
-				if ((_p7.ctor === 'Just') && (_p7._0.ctor === '::')) {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							_p10,
-							{
-								current: _elm_lang$core$Maybe$Just(
-									{ctor: '_Tuple2', _0: _p8, _1: _p7._0}),
-								cursor: 0
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _p10,
-						_1: _ymtszw$elm_slides$Main$getMarkdownFile(_p8)
-					};
-				}
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						_p10,
-						{cursor: _p4._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
 		}
 	});
-var _ymtszw$elm_slides$Main$init = {
-	ctor: '_Tuple2',
-	_0: {
+var _ymtszw$elm_slides$Main$init = function (loc) {
+	var model = {
 		index: _elm_lang$core$Dict$fromList(
 			{
 				ctor: '::',
@@ -9810,10 +10325,12 @@ var _ymtszw$elm_slides$Main$init = {
 			}),
 		current: _elm_lang$core$Maybe$Nothing,
 		cursor: 0
-	},
-	_1: _ymtszw$elm_slides$Main$getMarkdownFile('README.md')
+	};
+	return A2(_ymtszw$elm_slides$Router$route, model, loc);
 };
-var _ymtszw$elm_slides$Main$main = _elm_lang$html$Html$program(
+var _ymtszw$elm_slides$Main$main = A2(
+	_elm_lang$navigation$Navigation$program,
+	_ymtszw$elm_slides$Type$Loc,
 	{
 		init: _ymtszw$elm_slides$Main$init,
 		update: _ymtszw$elm_slides$Main$update,
