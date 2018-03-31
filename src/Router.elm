@@ -2,7 +2,7 @@ module Router exposing (route)
 
 import Dict
 import Navigation exposing (Location)
-import Type exposing (..)
+import Type exposing (Model, Msg(..))
 import File
 
 
@@ -27,7 +27,7 @@ route ({ index } as model) { hash } =
 
 fileAndCursor : String -> ( String, Int )
 fileAndCursor hash =
-    case hash |> String.dropLeft 1 |> String.split "/" |> Debug.log "path" of
+    case hash |> String.dropLeft 1 |> String.split "/" of
         [] ->
             ( "README.md", 0 )
 

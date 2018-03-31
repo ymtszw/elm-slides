@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Lazy as Z
 import Markdown
-import Type exposing (..)
+import Type exposing (Model, Msg(..))
 
 
 view : Model -> Html Msg
@@ -84,7 +84,7 @@ locatorButton disabled_ filename toCursor others children =
     if disabled_ then
         span (attribute "disabled" "disabled" :: others) children
     else
-        a ((href ("#" ++ filename ++ "/" ++ toString toCursor)) :: others) children
+        a (href ("#" ++ filename ++ "/" ++ toString toCursor) :: others) children
 
 
 page : Int -> Int -> String -> Html Msg

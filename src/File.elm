@@ -2,7 +2,7 @@ module File exposing (getMarkdown)
 
 import Regex
 import Http exposing (getString, send)
-import Type exposing (..)
+import Type exposing (Msg(..), Success(..))
 
 
 getMarkdown : String -> Cmd Msg

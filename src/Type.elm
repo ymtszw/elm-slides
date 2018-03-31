@@ -1,4 +1,4 @@
-module Type exposing (..)
+module Type exposing (Msg(..), Success(..), Model)
 
 import Dict exposing (Dict)
 import Http

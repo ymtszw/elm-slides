@@ -1,8 +1,8 @@
 module Main exposing (main)
 
-import Dict exposing (Dict)
+import Dict
 import Navigation exposing (Location)
-import Type exposing (..)
+import Type exposing (Model, Msg(..), Success(..))
 import Router exposing (route)
 import View
 
