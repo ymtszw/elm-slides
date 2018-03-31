@@ -61,6 +61,7 @@
 - こんな形をしています
 
 ```elm
+-- Main.elm
 main : Program Never Model Msg
 main =
     Html.program
@@ -74,27 +75,7 @@ main =
 ---
 
 ```elm
-type Msg
-    = NoOp
-    | ClientRes (Result Http.Error Success)
-    | OpenFile String
-    | CursorTo Int
-
-
-type Success
-    = GetMarkdownFile String (List String)
-
-
-type alias Model =
-    { index : Dict String (List String)
-    , current : Maybe ( String, List String )
-    , cursor : Int
-    }
-```
-
----
-
-```elm
+-- Main.elm
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg ({ index } as model) =
     case msg of
@@ -116,6 +97,29 @@ update msg ({ index } as model) =
 ---
 
 ```elm
+-- Type.elm
+type Msg
+    = NoOp
+    | ClientRes (Result Http.Error Success)
+    | OpenFile String
+    | CursorTo Int
+
+
+type Success
+    = GetMarkdownFile String (List String)
+
+
+type alias Model =
+    { index : Dict String (List String)
+    , current : Maybe ( String, List String )
+    , cursor : Int
+    }
+```
+
+---
+
+```elm
+-- View.elm
 view : Model -> Html Msg
 view model =
     section [ class "section" ]
