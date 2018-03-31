@@ -4,6 +4,7 @@
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   font-family: Impact, sans-serif;
+  margin-top: 2rem;
 }
 
 .reveal ul {
@@ -14,6 +15,10 @@
   font-family: Monaco, Courier, monospace;
   padding: 0 0.2em;
   border-radius: 0.1em;
+}
+
+.reveal pre {
+  font-size: 50%;
 }
 
 .reveal blockquote {

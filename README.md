@@ -1,7 +1,7 @@
 elm-slides
 ==========
 
-- Slides presented with Elm!
+- Slides powered by Elm!
 
 ![axe](./images/axe.gif)
 

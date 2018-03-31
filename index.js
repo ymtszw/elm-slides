@@ -13273,7 +13273,35 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _ymtszw$elm_slides$Main$page = F3(
+var _ymtszw$elm_slides$Type$slideList = {
+	ctor: '::',
+	_0: 'README.md',
+	_1: {
+		ctor: '::',
+		_0: 'delightful_elm.md',
+		_1: {ctor: '[]'}
+	}
+};
+var _ymtszw$elm_slides$Type$Model = F3(
+	function (a, b, c) {
+		return {index: a, current: b, cursor: c};
+	});
+var _ymtszw$elm_slides$Type$CursorTo = function (a) {
+	return {ctor: 'CursorTo', _0: a};
+};
+var _ymtszw$elm_slides$Type$OpenFile = function (a) {
+	return {ctor: 'OpenFile', _0: a};
+};
+var _ymtszw$elm_slides$Type$ClientRes = function (a) {
+	return {ctor: 'ClientRes', _0: a};
+};
+var _ymtszw$elm_slides$Type$NoOp = {ctor: 'NoOp'};
+var _ymtszw$elm_slides$Type$GetMarkdownFile = F2(
+	function (a, b) {
+		return {ctor: 'GetMarkdownFile', _0: a, _1: b};
+	});
+
+var _ymtszw$elm_slides$View$page = F3(
 	function (cursor, index, content) {
 		var contents = ((_elm_lang$core$Native_Utils.cmp(cursor - 2, index) < 1) && (_elm_lang$core$Native_Utils.cmp(index, cursor + 2) < 1)) ? {
 			ctor: '::',
@@ -13311,7 +13339,7 @@ var _ymtszw$elm_slides$Main$page = F3(
 			},
 			contents));
 	});
-var _ymtszw$elm_slides$Main$withDisabled = F2(
+var _ymtszw$elm_slides$View$withDisabled = F2(
 	function (disabled_, others) {
 		return disabled_ ? {
 			ctor: '::',
@@ -13319,30 +13347,7 @@ var _ymtszw$elm_slides$Main$withDisabled = F2(
 			_1: others
 		} : others;
 	});
-var _ymtszw$elm_slides$Main$subscriptions = function (_p0) {
-	return _elm_lang$core$Platform_Sub$none;
-};
-var _ymtszw$elm_slides$Main$separator = _elm_lang$core$Regex$regex('---+\\s+');
-var _ymtszw$elm_slides$Main$chopFile = function (raw) {
-	return A3(_elm_lang$core$Regex$split, _elm_lang$core$Regex$All, _ymtszw$elm_slides$Main$separator, raw);
-};
-var _ymtszw$elm_slides$Main$slideList = {
-	ctor: '::',
-	_0: 'README.md',
-	_1: {
-		ctor: '::',
-		_0: 'delightful_elm.md',
-		_1: {ctor: '[]'}
-	}
-};
-var _ymtszw$elm_slides$Main$Model = F3(
-	function (a, b, c) {
-		return {index: a, current: b, cursor: c};
-	});
-var _ymtszw$elm_slides$Main$CursorTo = function (a) {
-	return {ctor: 'CursorTo', _0: a};
-};
-var _ymtszw$elm_slides$Main$locator = F2(
+var _ymtszw$elm_slides$View$locator = F2(
 	function (max, cursor) {
 		return A2(
 			_elm_lang$html$Html$nav,
@@ -13364,7 +13369,7 @@ var _ymtszw$elm_slides$Main$locator = F2(
 				_0: A2(
 					_elm_lang$html$Html$button,
 					A2(
-						_ymtszw$elm_slides$Main$withDisabled,
+						_ymtszw$elm_slides$View$withDisabled,
 						_elm_lang$core$Native_Utils.cmp(cursor, 0) < 1,
 						{
 							ctor: '::',
@@ -13372,7 +13377,7 @@ var _ymtszw$elm_slides$Main$locator = F2(
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$html$Html_Events$onClick(
-									_ymtszw$elm_slides$Main$CursorTo(cursor - 1)),
+									_ymtszw$elm_slides$Type$CursorTo(cursor - 1)),
 								_1: {ctor: '[]'}
 							}
 						}),
@@ -13417,7 +13422,7 @@ var _ymtszw$elm_slides$Main$locator = F2(
 						_0: A2(
 							_elm_lang$html$Html$button,
 							A2(
-								_ymtszw$elm_slides$Main$withDisabled,
+								_ymtszw$elm_slides$View$withDisabled,
 								_elm_lang$core$Native_Utils.cmp(cursor, max - 1) > -1,
 								{
 									ctor: '::',
@@ -13425,7 +13430,7 @@ var _ymtszw$elm_slides$Main$locator = F2(
 									_1: {
 										ctor: '::',
 										_0: _elm_lang$html$Html_Events$onClick(
-											_ymtszw$elm_slides$Main$CursorTo(cursor + 1)),
+											_ymtszw$elm_slides$Type$CursorTo(cursor + 1)),
 										_1: {ctor: '[]'}
 									}
 								}),
@@ -13446,12 +13451,12 @@ var _ymtszw$elm_slides$Main$locator = F2(
 				}
 			});
 	});
-var _ymtszw$elm_slides$Main$rendered = function (_p1) {
-	var _p2 = _p1;
-	var _p5 = _p2.cursor;
-	var _p3 = _p2.current;
-	if (_p3.ctor === 'Just') {
-		var _p4 = _p3._0._1;
+var _ymtszw$elm_slides$View$rendered = function (_p0) {
+	var _p1 = _p0;
+	var _p4 = _p1.cursor;
+	var _p2 = _p1.current;
+	if (_p2.ctor === 'Just') {
+		var _p3 = _p2._0._1;
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -13462,9 +13467,9 @@ var _ymtszw$elm_slides$Main$rendered = function (_p1) {
 			{
 				ctor: '::',
 				_0: A2(
-					_ymtszw$elm_slides$Main$locator,
-					_elm_lang$core$List$length(_p4),
-					_p5),
+					_ymtszw$elm_slides$View$locator,
+					_elm_lang$core$List$length(_p3),
+					_p4),
 				_1: {
 					ctor: '::',
 					_0: A2(
@@ -13476,8 +13481,8 @@ var _ymtszw$elm_slides$Main$rendered = function (_p1) {
 						},
 						A2(
 							_elm_lang$core$List$indexedMap,
-							_ymtszw$elm_slides$Main$page(_p5),
-							_p4)),
+							_ymtszw$elm_slides$View$page(_p4),
+							_p3)),
 					_1: {ctor: '[]'}
 				}
 			});
@@ -13496,10 +13501,7 @@ var _ymtszw$elm_slides$Main$rendered = function (_p1) {
 			});
 	}
 };
-var _ymtszw$elm_slides$Main$OpenFile = function (a) {
-	return {ctor: 'OpenFile', _0: a};
-};
-var _ymtszw$elm_slides$Main$view = function (model) {
+var _ymtszw$elm_slides$View$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$section,
 		{
@@ -13570,7 +13572,7 @@ var _ymtszw$elm_slides$Main$view = function (model) {
 																{
 																	ctor: '::',
 																	_0: _elm_lang$html$Html_Events$onClick(
-																		_ymtszw$elm_slides$Main$OpenFile(filename)),
+																		_ymtszw$elm_slides$Type$OpenFile(filename)),
 																	_1: {ctor: '[]'}
 																},
 																{
@@ -13582,7 +13584,7 @@ var _ymtszw$elm_slides$Main$view = function (model) {
 															_1: {ctor: '[]'}
 														});
 												},
-												_ymtszw$elm_slides$Main$slideList)),
+												_ymtszw$elm_slides$Type$slideList)),
 										_1: {ctor: '[]'}
 									}
 								}),
@@ -13597,7 +13599,7 @@ var _ymtszw$elm_slides$Main$view = function (model) {
 									},
 									{
 										ctor: '::',
-										_0: _ymtszw$elm_slides$Main$rendered(model),
+										_0: _ymtszw$elm_slides$View$rendered(model),
 										_1: {ctor: '[]'}
 									}),
 								_1: {ctor: '[]'}
@@ -13608,57 +13610,49 @@ var _ymtszw$elm_slides$Main$view = function (model) {
 			_1: {ctor: '[]'}
 		});
 };
-var _ymtszw$elm_slides$Main$ClientRes = function (a) {
-	return {ctor: 'ClientRes', _0: a};
+
+var _ymtszw$elm_slides$Main$separator = _elm_lang$core$Regex$regex('---+\\s+');
+var _ymtszw$elm_slides$Main$chopFile = function (raw) {
+	return A3(_elm_lang$core$Regex$split, _elm_lang$core$Regex$All, _ymtszw$elm_slides$Main$separator, raw);
 };
-var _ymtszw$elm_slides$Main$NoOp = {ctor: 'NoOp'};
-var _ymtszw$elm_slides$Main$GetMarkdownFile = F2(
-	function (a, b) {
-		return {ctor: 'GetMarkdownFile', _0: a, _1: b};
-	});
 var _ymtszw$elm_slides$Main$getMarkdownFile = function (path) {
 	return A2(
 		_elm_lang$http$Http$send,
-		function (_p6) {
-			return _ymtszw$elm_slides$Main$ClientRes(
+		function (_p0) {
+			return _ymtszw$elm_slides$Type$ClientRes(
 				A2(
 					_elm_lang$core$Result$map,
-					function (_p7) {
+					function (_p1) {
 						return A2(
-							_ymtszw$elm_slides$Main$GetMarkdownFile,
+							_ymtszw$elm_slides$Type$GetMarkdownFile,
 							path,
-							_ymtszw$elm_slides$Main$chopFile(_p7));
+							_ymtszw$elm_slides$Main$chopFile(_p1));
 					},
-					_p6));
+					_p0));
 		},
 		_elm_lang$http$Http$getString(path));
 };
-var _ymtszw$elm_slides$Main$init = {
-	ctor: '_Tuple2',
-	_0: {index: _elm_lang$core$Dict$empty, current: _elm_lang$core$Maybe$Nothing, cursor: 0},
-	_1: _ymtszw$elm_slides$Main$getMarkdownFile('README.md')
-};
 var _ymtszw$elm_slides$Main$update = F2(
-	function (msg, _p8) {
-		var _p9 = _p8;
-		var _p16 = _p9;
-		var _p15 = _p9.index;
-		var _p10 = msg;
-		switch (_p10.ctor) {
+	function (msg, _p2) {
+		var _p3 = _p2;
+		var _p10 = _p3;
+		var _p9 = _p3.index;
+		var _p4 = msg;
+		switch (_p4.ctor) {
 			case 'NoOp':
-				return {ctor: '_Tuple2', _0: _p16, _1: _elm_lang$core$Platform_Cmd$none};
+				return {ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'ClientRes':
-				if (_p10._0.ctor === 'Ok') {
-					var _p12 = _p10._0._0._0;
-					var _p11 = _p10._0._0._1;
+				if (_p4._0.ctor === 'Ok') {
+					var _p6 = _p4._0._0._0;
+					var _p5 = _p4._0._0._1;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
-							_p16,
+							_p10,
 							{
-								index: A3(_elm_lang$core$Dict$insert, _p12, _p11, _p15),
+								index: A3(_elm_lang$core$Dict$insert, _p6, _p5, _p9),
 								current: _elm_lang$core$Maybe$Just(
-									{ctor: '_Tuple2', _0: _p12, _1: _p11}),
+									{ctor: '_Tuple2', _0: _p6, _1: _p5}),
 								cursor: 0
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
@@ -13666,20 +13660,20 @@ var _ymtszw$elm_slides$Main$update = F2(
 				} else {
 					return A2(
 						_elm_lang$core$Basics$always,
-						{ctor: '_Tuple2', _0: _p16, _1: _elm_lang$core$Platform_Cmd$none},
-						A2(_elm_lang$core$Debug$log, 'Http Error', _p10._0._0));
+						{ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none},
+						A2(_elm_lang$core$Debug$log, 'Http Error', _p4._0._0));
 				}
 			case 'OpenFile':
-				var _p14 = _p10._0;
-				var _p13 = A2(_elm_lang$core$Dict$get, _p14, _p15);
-				if (_p13.ctor === 'Just') {
+				var _p8 = _p4._0;
+				var _p7 = A2(_elm_lang$core$Dict$get, _p8, _p9);
+				if (_p7.ctor === 'Just') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
-							_p16,
+							_p10,
 							{
 								current: _elm_lang$core$Maybe$Just(
-									{ctor: '_Tuple2', _0: _p14, _1: _p13._0}),
+									{ctor: '_Tuple2', _0: _p8, _1: _p7._0}),
 								cursor: 0
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
@@ -13687,27 +13681,37 @@ var _ymtszw$elm_slides$Main$update = F2(
 				} else {
 					return {
 						ctor: '_Tuple2',
-						_0: _p16,
-						_1: _ymtszw$elm_slides$Main$getMarkdownFile(_p14)
+						_0: _p10,
+						_1: _ymtszw$elm_slides$Main$getMarkdownFile(_p8)
 					};
 				}
 			default:
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
-						_p16,
-						{cursor: _p10._0}),
+						_p10,
+						{cursor: _p4._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
+var _ymtszw$elm_slides$Main$init = {
+	ctor: '_Tuple2',
+	_0: {index: _elm_lang$core$Dict$empty, current: _elm_lang$core$Maybe$Nothing, cursor: 0},
+	_1: _ymtszw$elm_slides$Main$getMarkdownFile('README.md')
+};
 var _ymtszw$elm_slides$Main$main = _elm_lang$html$Html$program(
-	{init: _ymtszw$elm_slides$Main$init, update: _ymtszw$elm_slides$Main$update, subscriptions: _ymtszw$elm_slides$Main$subscriptions, view: _ymtszw$elm_slides$Main$view})();
+	{
+		init: _ymtszw$elm_slides$Main$init,
+		update: _ymtszw$elm_slides$Main$update,
+		subscriptions: _elm_lang$core$Basics$always(_elm_lang$core$Platform_Sub$none),
+		view: _ymtszw$elm_slides$View$view
+	})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _ymtszw$elm_slides$Main$main !== 'undefined') {
-    _ymtszw$elm_slides$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Main.Success":{"args":[],"tags":{"GetMarkdownFile":["String","List String"]}},"Main.Msg":{"args":[],"tags":{"ClientRes":["Result.Result Http.Error Main.Success"],"CursorTo":["Int"],"OpenFile":["String"],"NoOp":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _ymtszw$elm_slides$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Type.Msg":{"args":[],"tags":{"ClientRes":["Result.Result Http.Error Type.Success"],"CursorTo":["Int"],"OpenFile":["String"],"NoOp":[]}},"Type.Success":{"args":[],"tags":{"GetMarkdownFile":["String","List String"]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"}},"message":"Type.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
