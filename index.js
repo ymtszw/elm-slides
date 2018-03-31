@@ -8884,6 +8884,121 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
+var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$html$Html_Events$targetChecked = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'checked',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$bool);
+var _elm_lang$html$Html_Events$targetValue = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'value',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
+var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
+var _elm_lang$html$Html_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
+var _elm_lang$html$Html_Events$onFocus = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'focus',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onBlur = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'blur',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onSubmitOptions = _elm_lang$core$Native_Utils.update(
+	_elm_lang$html$Html_Events$defaultOptions,
+	{preventDefault: true});
+var _elm_lang$html$Html_Events$onSubmit = function (msg) {
+	return A3(
+		_elm_lang$html$Html_Events$onWithOptions,
+		'submit',
+		_elm_lang$html$Html_Events$onSubmitOptions,
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onCheck = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetChecked));
+};
+var _elm_lang$html$Html_Events$onInput = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'input',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetValue));
+};
+var _elm_lang$html$Html_Events$onMouseOut = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseout',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseOver = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseover',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseLeave = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseleave',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseEnter = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseenter',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseUp = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseup',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseDown = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mousedown',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onDoubleClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'dblclick',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'click',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$Options = F2(
+	function (a, b) {
+		return {stopPropagation: a, preventDefault: b};
+	});
+
 var _elm_lang$html$Html_Lazy$lazy3 = _elm_lang$virtual_dom$VirtualDom$lazy3;
 var _elm_lang$html$Html_Lazy$lazy2 = _elm_lang$virtual_dom$VirtualDom$lazy2;
 var _elm_lang$html$Html_Lazy$lazy = _elm_lang$virtual_dom$VirtualDom$lazy;
@@ -9791,12 +9906,15 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _ymtszw$elm_slides$Type$Model = F3(
-	function (a, b, c) {
-		return {index: a, current: b, cursor: c};
+var _ymtszw$elm_slides$Type$Model = F4(
+	function (a, b, c, d) {
+		return {index: a, current: b, cursor: c, navOpen: d};
 	});
 var _ymtszw$elm_slides$Type$ClientRes = function (a) {
 	return {ctor: 'ClientRes', _0: a};
+};
+var _ymtszw$elm_slides$Type$ToggleNav = function (a) {
+	return {ctor: 'ToggleNav', _0: a};
 };
 var _ymtszw$elm_slides$Type$Loc = function (a) {
 	return {ctor: 'Loc', _0: a};
@@ -9831,12 +9949,9 @@ var _ymtszw$elm_slides$File$getMarkdown = function (path) {
 
 var _ymtszw$elm_slides$Router$fileAndCursor = function (hash) {
 	var _p0 = A2(
-		_elm_lang$core$Debug$log,
-		'path',
-		A2(
-			_elm_lang$core$String$split,
-			'/',
-			A2(_elm_lang$core$String$dropLeft, 1, hash)));
+		_elm_lang$core$String$split,
+		'/',
+		A2(_elm_lang$core$String$dropLeft, 1, hash));
 	if (_p0.ctor === '[]') {
 		return {ctor: '_Tuple2', _0: 'README.md', _1: 0};
 	} else {
@@ -10100,13 +10215,17 @@ var _ymtszw$elm_slides$View$rendered = function (_p0) {
 			});
 	}
 };
-var _ymtszw$elm_slides$View$view = function (_p5) {
+var _ymtszw$elm_slides$View$isActive = function (navOpen) {
+	return navOpen ? ' is-active' : '';
+};
+var _ymtszw$elm_slides$View$navbar = function (_p5) {
 	var _p6 = _p5;
+	var _p7 = _p6.navOpen;
 	return A2(
-		_elm_lang$html$Html$section,
+		_elm_lang$html$Html$nav,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('section'),
+			_0: _elm_lang$html$Html_Attributes$class('navbar'),
 			_1: {ctor: '[]'}
 		},
 		{
@@ -10115,7 +10234,7 @@ var _ymtszw$elm_slides$View$view = function (_p5) {
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('container is-fluid is-fullhd'),
+					_0: _elm_lang$html$Html_Attributes$class('navbar-brand'),
 					_1: {ctor: '[]'}
 				},
 				{
@@ -10124,149 +10243,202 @@ var _ymtszw$elm_slides$View$view = function (_p5) {
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('columns'),
+							_0: _elm_lang$html$Html_Attributes$class('navbar-item'),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$aside,
+								_elm_lang$html$Html$a,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('menu column is-2'),
+									_0: _elm_lang$html$Html_Attributes$href('https://github.com/ymtszw/elm-slides'),
 									_1: {ctor: '[]'}
 								},
 								{
 									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$p,
+										_elm_lang$html$Html$span,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('menu-label'),
+											_0: _elm_lang$html$Html_Attributes$class('fab fa-github'),
 											_1: {ctor: '[]'}
 										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('INDEX'),
-											_1: {ctor: '[]'}
-										}),
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('ymtszw/elm-slides'),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'navbar-burger burger',
+										_ymtszw$elm_slides$View$isActive(_p7))),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(
+										_ymtszw$elm_slides$Type$ToggleNav(!_p7)),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$span,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$span,
+										{ctor: '[]'},
+										{ctor: '[]'}),
 									_1: {
 										ctor: '::',
 										_0: A2(
-											_elm_lang$html$Html$ul,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('menu-list'),
-												_1: {ctor: '[]'}
-											},
-											A2(
-												_elm_lang$core$List$map,
-												function (filename) {
-													return A2(
-														_elm_lang$html$Html$li,
-														{ctor: '[]'},
-														{
-															ctor: '::',
-															_0: A2(
-																_elm_lang$html$Html$a,
-																{
-																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$href(
-																		A2(_elm_lang$core$Basics_ops['++'], '#', filename)),
-																	_1: {ctor: '[]'}
-																},
-																{
-																	ctor: '::',
-																	_0: _elm_lang$html$Html$text(
-																		A2(_elm_lang$core$String$dropRight, 3, filename)),
-																	_1: {ctor: '[]'}
-																}),
-															_1: {ctor: '[]'}
-														});
-												},
-												_elm_lang$core$Dict$keys(_p6.index))),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$p,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$class('menu-label'),
-													_1: {ctor: '[]'}
-												},
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html$text('SOURCE'),
-													_1: {ctor: '[]'}
-												}),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$ul,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$class('menu-list'),
-														_1: {ctor: '[]'}
-													},
-													{
-														ctor: '::',
-														_0: A2(
-															_elm_lang$html$Html$li,
-															{ctor: '[]'},
-															{
-																ctor: '::',
-																_0: A2(
-																	_elm_lang$html$Html$a,
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$href('https://github.com/ymtszw/elm-slides'),
-																		_1: {ctor: '[]'}
-																	},
-																	{
-																		ctor: '::',
-																		_0: A2(
-																			_elm_lang$html$Html$i,
-																			{
-																				ctor: '::',
-																				_0: _elm_lang$html$Html_Attributes$class('fab fa-github'),
-																				_1: {ctor: '[]'}
-																			},
-																			{ctor: '[]'}),
-																		_1: {
-																			ctor: '::',
-																			_0: _elm_lang$html$Html$text('ymtszw/elm-slides'),
-																			_1: {ctor: '[]'}
-																		}
-																	}),
-																_1: {ctor: '[]'}
-															}),
-														_1: {ctor: '[]'}
-													}),
-												_1: {ctor: '[]'}
-											}
-										}
+											_elm_lang$html$Html$span,
+											{ctor: '[]'},
+											{ctor: '[]'}),
+										_1: {ctor: '[]'}
 									}
-								}),
-							_1: {
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'navbar-menu',
+								_ymtszw$elm_slides$View$isActive(_p7))),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('navbar-start'),
+								_1: {ctor: '[]'}
+							},
+							{
 								ctor: '::',
 								_0: A2(
 									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('column is-10'),
+										_0: _elm_lang$html$Html_Attributes$class('navbar-item has-dropdown is-hoverable'),
 										_1: {ctor: '[]'}
 									},
 									{
 										ctor: '::',
-										_0: _ymtszw$elm_slides$View$rendered(_p6),
-										_1: {ctor: '[]'}
+										_0: A2(
+											_elm_lang$html$Html$a,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('navbar-link'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('INDEX'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$div,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('navbar-dropdown is-boxed'),
+													_1: {ctor: '[]'}
+												},
+												A3(
+													_elm_lang$core$Basics$flip,
+													_elm_lang$core$List$map,
+													_elm_lang$core$Dict$keys(_p6.index),
+													function (filename) {
+														return A2(
+															_elm_lang$html$Html$a,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$class('navbar-item'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$href(
+																		A2(_elm_lang$core$Basics_ops['++'], '#', filename)),
+																	_1: {ctor: '[]'}
+																}
+															},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text(
+																	A2(_elm_lang$core$String$dropRight, 3, filename)),
+																_1: {ctor: '[]'}
+															});
+													})),
+											_1: {ctor: '[]'}
+										}
 									}),
 								_1: {ctor: '[]'}
-							}
-						}),
-					_1: {ctor: '[]'}
-				}),
-			_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _ymtszw$elm_slides$View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _ymtszw$elm_slides$View$navbar(model),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$section,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('section'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('container is-fluid is-fullhd'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _ymtszw$elm_slides$View$rendered(model),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 
@@ -10280,7 +10452,7 @@ var _ymtszw$elm_slides$Main$update = F2(
 				return {ctor: '_Tuple2', _0: _p5, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'Loc':
 				return A2(_ymtszw$elm_slides$Router$route, _p5, _p2._0);
-			default:
+			case 'ClientRes':
 				if (_p2._0.ctor === 'Ok') {
 					var _p4 = _p2._0._0._0;
 					var _p3 = _p2._0._0._1;
@@ -10301,6 +10473,14 @@ var _ymtszw$elm_slides$Main$update = F2(
 						{ctor: '_Tuple2', _0: _p5, _1: _elm_lang$core$Platform_Cmd$none},
 						A2(_elm_lang$core$Debug$log, 'Http Error', _p2._0._0));
 				}
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p5,
+						{navOpen: _p2._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _ymtszw$elm_slides$Main$init = function (loc) {
@@ -10324,7 +10504,8 @@ var _ymtszw$elm_slides$Main$init = function (loc) {
 				}
 			}),
 		current: _elm_lang$core$Maybe$Nothing,
-		cursor: 0
+		cursor: 0,
+		navOpen: false
 	};
 	return A2(_ymtszw$elm_slides$Router$route, model, loc);
 };

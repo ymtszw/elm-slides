@@ -8,6 +8,7 @@ import Navigation exposing (Location)
 type Msg
     = NoOp
     | Loc Location
+    | ToggleNav Bool
     | ClientRes (Result Http.Error Success)
 
 
@@ -19,4 +20,5 @@ type alias Model =
     { index : Dict String (List String)
     , current : Maybe ( String, List String )
     , cursor : Int
+    , navOpen : Bool
     }

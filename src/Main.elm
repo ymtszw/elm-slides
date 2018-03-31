@@ -18,6 +18,7 @@ init loc =
                     ]
             , current = Nothing
             , cursor = 0
+            , navOpen = False
             }
     in
         route model loc
@@ -42,6 +43,9 @@ update msg ({ index } as model) =
 
         ClientRes (Err e) ->
             Debug.log "Http Error" e |> always ( model, Cmd.none )
+
+        ToggleNav navOpen ->
+            ( { model | navOpen = navOpen }, Cmd.none )
 
 
 main : Program Never Model Msg

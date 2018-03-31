@@ -7,6 +7,14 @@
   margin-top: 2rem;
 }
 
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6, .reveal p {
+  text-align: center;
+}
+
+.reveal blockquote p {
+  text-align: left;
+}
+
 .reveal ul {
   font-size: 90%;
 }
@@ -26,15 +34,12 @@
   color: dimgray;
 }
 
-.reveal img {
-  width: 100%;
-}
-
 .reveal .slide-background.present {
   opacity: 0.2;
 }
 
 .reveal .slides {
+  margin-top: .25rem;
   overflow: hidden;
 }
 

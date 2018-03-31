@@ -3,41 +3,62 @@ module View exposing (view)
 import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Markdown
 import Type exposing (Model, Msg(..))
 
 
 view : Model -> Html Msg
-view ({ index } as model) =
-    section [ class "section" ]
-        [ div [ class "container is-fluid is-fullhd" ]
-            [ div [ class "columns" ]
-                [ aside [ class "menu column is-2" ]
-                    [ p [ class "menu-label" ] [ text "INDEX" ]
-                    , ul [ class "menu-list" ] <|
-                        List.map
-                            (\filename ->
-                                li []
-                                    [ a [ href ("#" ++ filename) ]
-                                        [ text (String.dropRight 3 filename) ]
-                                    ]
-                            )
-                            (Dict.keys index)
-                    , p [ class "menu-label" ] [ text "SOURCE" ]
-                    , ul [ class "menu-list" ]
-                        [ li []
-                            [ a [ href "https://github.com/ymtszw/elm-slides" ]
-                                [ i [ class "fab fa-github" ] []
-                                , text "ymtszw/elm-slides"
-                                ]
-                            ]
-                        ]
-                    ]
-                , div [ class "column is-10" ] [ rendered model ]
+view model =
+    div []
+        [ navbar model
+        , section
+            [ class "section" ]
+            [ div [ class "container is-fluid is-fullhd" ]
+                [ rendered model
                 ]
             ]
         ]
+
+
+navbar : Model -> Html Msg
+navbar { index, navOpen } =
+    nav [ class "navbar" ]
+        [ div [ class "navbar-brand" ]
+            [ div [ class "navbar-item" ]
+                [ a [ href "https://github.com/ymtszw/elm-slides" ]
+                    [ span [ class "fab fa-github" ] []
+                    , text "ymtszw/elm-slides"
+                    ]
+                ]
+            , div
+                [ class <| "navbar-burger burger" ++ isActive navOpen
+                , onClick (ToggleNav (not navOpen))
+                ]
+                [ span [] [], span [] [], span [] [] ]
+            ]
+        , div [ class <| "navbar-menu" ++ isActive navOpen ]
+            [ div [ class "navbar-start" ]
+                [ div [ class "navbar-item has-dropdown is-hoverable" ]
+                    [ a [ class "navbar-link" ] [ text "INDEX" ]
+                    , div [ class "navbar-dropdown is-boxed" ] <|
+                        flip List.map (Dict.keys index) <|
+                            \filename ->
+                                a [ class "navbar-item", href ("#" ++ filename) ]
+                                    [ text (String.dropRight 3 filename) ]
+                    ]
+                ]
+            ]
+        ]
+
+
+isActive : Bool -> String
+isActive navOpen =
+    if navOpen then
+        " is-active"
+    else
+        ""
 
 
 rendered : Model -> Html Msg
