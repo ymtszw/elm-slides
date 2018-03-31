@@ -4,6 +4,7 @@ import Dict
 import Navigation exposing (Location)
 import Type exposing (Model, Msg(..))
 import File
+import Ports
 
 
 route : Model -> Location -> ( Model, Cmd Msg )
@@ -18,7 +19,7 @@ route ({ index } as model) { hash } =
                     | current = Just ( filename, contents )
                     , cursor = cursor
                   }
-                , Cmd.none
+                , Ports.setTitle (String.dropRight 3 filename)
                 )
 
             _ ->

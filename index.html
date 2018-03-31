@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <meta charset="UTF-8"><title>elm-slides</title>
+    <meta charset="UTF-8"><title>ymtszw/elm-slides</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Slides presented with Elm!">
     <meta http-equiv="X-UA-Compatible" content="E=edge">
@@ -16,7 +16,10 @@
   </head>
   <body>
     <script type="text/javascript">
-      Elm.Main.fullscreen()
+      var app = Elm.Main.fullscreen()
+      app.ports.setTitle.subscribe(function(title) {
+        document.title = title + ' | ymtszw/elm-slides'
+      })
     </script>
   </body>
 </html>

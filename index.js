@@ -10119,6 +10119,12 @@ var _ymtszw$elm_slides$File$getMarkdown = function (path) {
 		_elm_lang$http$Http$getString(path));
 };
 
+var _ymtszw$elm_slides$Ports$setTitle = _elm_lang$core$Native_Platform.outgoingPort(
+	'setTitle',
+	function (v) {
+		return v;
+	});
+
 var _ymtszw$elm_slides$Router$fileAndCursor = function (hash) {
 	var _p0 = A2(
 		_elm_lang$core$String$split,
@@ -10163,7 +10169,8 @@ var _ymtszw$elm_slides$Router$route = F2(
 							{ctor: '_Tuple2', _0: filename, _1: _p8._0}),
 						cursor: cursor
 					}),
-				_1: _elm_lang$core$Platform_Cmd$none
+				_1: _ymtszw$elm_slides$Ports$setTitle(
+					A2(_elm_lang$core$String$dropRight, 3, filename))
 			};
 		} else {
 			return {
@@ -10747,7 +10754,8 @@ var _ymtszw$elm_slides$Main$update = F2(
 								current: _elm_lang$core$Maybe$Just(
 									{ctor: '_Tuple2', _0: _p9, _1: _p8})
 							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+						_1: _ymtszw$elm_slides$Ports$setTitle(
+							A2(_elm_lang$core$String$dropRight, 3, _p9))
 					};
 				} else {
 					return A2(

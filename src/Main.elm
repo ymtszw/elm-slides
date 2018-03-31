@@ -5,6 +5,7 @@ import Navigation exposing (Location)
 import Keyboard exposing (KeyCode)
 import Type exposing (Model, Msg(..), Success(..))
 import Router exposing (route)
+import Ports
 import View
 
 
@@ -42,7 +43,7 @@ update msg ({ index } as model) =
                 | index = Dict.insert filename contents index
                 , current = Just ( filename, contents )
               }
-            , Cmd.none
+            , Ports.setTitle (String.dropRight 3 filename)
             )
 
         ClientRes (Err e) ->
