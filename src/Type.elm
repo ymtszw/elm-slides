@@ -8,6 +8,7 @@ import Navigation exposing (Location)
 type Msg
     = NoOp
     | Loc Location
+    | GoTo String
     | ToggleNav Bool
     | ClientRes (Result Http.Error Success)
 

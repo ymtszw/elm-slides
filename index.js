@@ -9364,6 +9364,175 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
+var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
+	function (router, _p0, state) {
+		var _p1 = _p0;
+		var _p2 = A2(_elm_lang$core$Dict$get, _p1.category, state);
+		if (_p2.ctor === 'Nothing') {
+			return _elm_lang$core$Task$succeed(state);
+		} else {
+			var send = function (tagger) {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					tagger(_p1.keyCode));
+			};
+			return A2(
+				_elm_lang$core$Task$andThen,
+				function (_p3) {
+					return _elm_lang$core$Task$succeed(state);
+				},
+				_elm_lang$core$Task$sequence(
+					A2(_elm_lang$core$List$map, send, _p2._0.taggers)));
+		}
+	});
+var _elm_lang$keyboard$Keyboard_ops = _elm_lang$keyboard$Keyboard_ops || {};
+_elm_lang$keyboard$Keyboard_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p4) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$keyboard$Keyboard$init = _elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty);
+var _elm_lang$keyboard$Keyboard$categorizeHelpHelp = F2(
+	function (value, maybeValues) {
+		var _p5 = maybeValues;
+		if (_p5.ctor === 'Nothing') {
+			return _elm_lang$core$Maybe$Just(
+				{
+					ctor: '::',
+					_0: value,
+					_1: {ctor: '[]'}
+				});
+		} else {
+			return _elm_lang$core$Maybe$Just(
+				{ctor: '::', _0: value, _1: _p5._0});
+		}
+	});
+var _elm_lang$keyboard$Keyboard$categorizeHelp = F2(
+	function (subs, subDict) {
+		categorizeHelp:
+		while (true) {
+			var _p6 = subs;
+			if (_p6.ctor === '[]') {
+				return subDict;
+			} else {
+				var _v4 = _p6._1,
+					_v5 = A3(
+					_elm_lang$core$Dict$update,
+					_p6._0._0,
+					_elm_lang$keyboard$Keyboard$categorizeHelpHelp(_p6._0._1),
+					subDict);
+				subs = _v4;
+				subDict = _v5;
+				continue categorizeHelp;
+			}
+		}
+	});
+var _elm_lang$keyboard$Keyboard$categorize = function (subs) {
+	return A2(_elm_lang$keyboard$Keyboard$categorizeHelp, subs, _elm_lang$core$Dict$empty);
+};
+var _elm_lang$keyboard$Keyboard$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$keyboard$Keyboard$subscription = _elm_lang$core$Native_Platform.leaf('Keyboard');
+var _elm_lang$keyboard$Keyboard$Watcher = F2(
+	function (a, b) {
+		return {taggers: a, pid: b};
+	});
+var _elm_lang$keyboard$Keyboard$Msg = F2(
+	function (a, b) {
+		return {category: a, keyCode: b};
+	});
+var _elm_lang$keyboard$Keyboard$onEffects = F3(
+	function (router, newSubs, oldState) {
+		var rightStep = F3(
+			function (category, taggers, task) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (state) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (pid) {
+								return _elm_lang$core$Task$succeed(
+									A3(
+										_elm_lang$core$Dict$insert,
+										category,
+										A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, pid),
+										state));
+							},
+							_elm_lang$core$Process$spawn(
+								A3(
+									_elm_lang$dom$Dom_LowLevel$onDocument,
+									category,
+									_elm_lang$keyboard$Keyboard$keyCode,
+									function (_p7) {
+										return A2(
+											_elm_lang$core$Platform$sendToSelf,
+											router,
+											A2(_elm_lang$keyboard$Keyboard$Msg, category, _p7));
+									})));
+					},
+					task);
+			});
+		var bothStep = F4(
+			function (category, _p8, taggers, task) {
+				var _p9 = _p8;
+				return A2(
+					_elm_lang$core$Task$map,
+					A2(
+						_elm_lang$core$Dict$insert,
+						category,
+						A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, _p9.pid)),
+					task);
+			});
+		var leftStep = F3(
+			function (category, _p10, task) {
+				var _p11 = _p10;
+				return A2(
+					_elm_lang$keyboard$Keyboard_ops['&>'],
+					_elm_lang$core$Process$kill(_p11.pid),
+					task);
+			});
+		return A6(
+			_elm_lang$core$Dict$merge,
+			leftStep,
+			bothStep,
+			rightStep,
+			oldState,
+			_elm_lang$keyboard$Keyboard$categorize(newSubs),
+			_elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty));
+	});
+var _elm_lang$keyboard$Keyboard$MySub = F2(
+	function (a, b) {
+		return {ctor: 'MySub', _0: a, _1: b};
+	});
+var _elm_lang$keyboard$Keyboard$presses = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keypress', tagger));
+};
+var _elm_lang$keyboard$Keyboard$downs = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keydown', tagger));
+};
+var _elm_lang$keyboard$Keyboard$ups = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keyup', tagger));
+};
+var _elm_lang$keyboard$Keyboard$subMap = F2(
+	function (func, _p12) {
+		var _p13 = _p12;
+		return A2(
+			_elm_lang$keyboard$Keyboard$MySub,
+			_p13._0,
+			function (_p14) {
+				return func(
+					_p13._1(_p14));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
+
 var _elm_lang$navigation$Native_Navigation = function() {
 
 
@@ -9916,6 +10085,9 @@ var _ymtszw$elm_slides$Type$ClientRes = function (a) {
 var _ymtszw$elm_slides$Type$ToggleNav = function (a) {
 	return {ctor: 'ToggleNav', _0: a};
 };
+var _ymtszw$elm_slides$Type$GoTo = function (a) {
+	return {ctor: 'GoTo', _0: a};
+};
 var _ymtszw$elm_slides$Type$Loc = function (a) {
 	return {ctor: 'Loc', _0: a};
 };
@@ -10442,43 +10614,153 @@ var _ymtszw$elm_slides$View$view = function (model) {
 		});
 };
 
+var _ymtszw$elm_slides$Main$backwardKeys = {
+	ctor: '::',
+	_0: 37,
+	_1: {
+		ctor: '::',
+		_0: 38,
+		_1: {
+			ctor: '::',
+			_0: 72,
+			_1: {
+				ctor: '::',
+				_0: 75,
+				_1: {ctor: '[]'}
+			}
+		}
+	}
+};
+var _ymtszw$elm_slides$Main$forwardKeys = {
+	ctor: '::',
+	_0: 39,
+	_1: {
+		ctor: '::',
+		_0: 40,
+		_1: {
+			ctor: '::',
+			_0: 74,
+			_1: {
+				ctor: '::',
+				_0: 76,
+				_1: {ctor: '[]'}
+			}
+		}
+	}
+};
+var _ymtszw$elm_slides$Main$bindGoTo = F4(
+	function (filename, toCursor, keys, code) {
+		return A2(_elm_lang$core$List$member, code, keys) ? _elm_lang$core$Maybe$Just(
+			_ymtszw$elm_slides$Type$GoTo(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'#',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						filename,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'/',
+							_elm_lang$core$Basics$toString(toCursor)))))) : _elm_lang$core$Maybe$Nothing;
+	});
+var _ymtszw$elm_slides$Main$foldBinds = F2(
+	function (callbacks, code) {
+		foldBinds:
+		while (true) {
+			var _p0 = callbacks;
+			if (_p0.ctor === '[]') {
+				return _ymtszw$elm_slides$Type$NoOp;
+			} else {
+				var _p1 = _p0._0(code);
+				if (_p1.ctor === 'Just') {
+					return _p1._0;
+				} else {
+					var _v2 = _p0._1,
+						_v3 = code;
+					callbacks = _v2;
+					code = _v3;
+					continue foldBinds;
+				}
+			}
+		}
+	});
+var _ymtszw$elm_slides$Main$binds = F3(
+	function (filename, max, cursor) {
+		return (_elm_lang$core$Native_Utils.cmp(cursor, 0) < 1) ? _ymtszw$elm_slides$Main$foldBinds(
+			{
+				ctor: '::',
+				_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor + 2, _ymtszw$elm_slides$Main$forwardKeys),
+				_1: {ctor: '[]'}
+			}) : ((_elm_lang$core$Native_Utils.cmp(cursor, max - 1) > -1) ? _ymtszw$elm_slides$Main$foldBinds(
+			{
+				ctor: '::',
+				_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor, _ymtszw$elm_slides$Main$backwardKeys),
+				_1: {ctor: '[]'}
+			}) : _ymtszw$elm_slides$Main$foldBinds(
+			{
+				ctor: '::',
+				_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor + 2, _ymtszw$elm_slides$Main$forwardKeys),
+				_1: {
+					ctor: '::',
+					_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor, _ymtszw$elm_slides$Main$backwardKeys),
+					_1: {ctor: '[]'}
+				}
+			}));
+	});
+var _ymtszw$elm_slides$Main$subscriptions = function (_p2) {
+	var _p3 = _p2;
+	var _p4 = _p3.current;
+	if ((((_p4.ctor === 'Just') && (_p4._0.ctor === '_Tuple2')) && (_p4._0._1.ctor === '::')) && (_p4._0._1._1.ctor === '::')) {
+		var max = _elm_lang$core$List$length(_p4._0._1);
+		return _elm_lang$keyboard$Keyboard$downs(
+			A3(_ymtszw$elm_slides$Main$binds, _p4._0._0, max, _p3.cursor));
+	} else {
+		return _elm_lang$core$Platform_Sub$none;
+	}
+};
 var _ymtszw$elm_slides$Main$update = F2(
-	function (msg, _p0) {
-		var _p1 = _p0;
-		var _p5 = _p1;
-		var _p2 = msg;
-		switch (_p2.ctor) {
+	function (msg, _p5) {
+		var _p6 = _p5;
+		var _p10 = _p6;
+		var _p7 = msg;
+		switch (_p7.ctor) {
 			case 'NoOp':
-				return {ctor: '_Tuple2', _0: _p5, _1: _elm_lang$core$Platform_Cmd$none};
+				return {ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'Loc':
-				return A2(_ymtszw$elm_slides$Router$route, _p5, _p2._0);
+				return A2(_ymtszw$elm_slides$Router$route, _p10, _p7._0);
+			case 'GoTo':
+				return {
+					ctor: '_Tuple2',
+					_0: _p10,
+					_1: _elm_lang$navigation$Navigation$newUrl(_p7._0)
+				};
 			case 'ClientRes':
-				if (_p2._0.ctor === 'Ok') {
-					var _p4 = _p2._0._0._0;
-					var _p3 = _p2._0._0._1;
+				if (_p7._0.ctor === 'Ok') {
+					var _p9 = _p7._0._0._0;
+					var _p8 = _p7._0._0._1;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
-							_p5,
+							_p10,
 							{
-								index: A3(_elm_lang$core$Dict$insert, _p4, _p3, _p1.index),
+								index: A3(_elm_lang$core$Dict$insert, _p9, _p8, _p6.index),
 								current: _elm_lang$core$Maybe$Just(
-									{ctor: '_Tuple2', _0: _p4, _1: _p3})
+									{ctor: '_Tuple2', _0: _p9, _1: _p8})
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					return A2(
 						_elm_lang$core$Basics$always,
-						{ctor: '_Tuple2', _0: _p5, _1: _elm_lang$core$Platform_Cmd$none},
-						A2(_elm_lang$core$Debug$log, 'Http Error', _p2._0._0));
+						{ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none},
+						A2(_elm_lang$core$Debug$log, 'Http Error', _p7._0._0));
 				}
 			default:
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
-						_p5,
-						{navOpen: _p2._0}),
+						_p10,
+						{navOpen: _p7._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
@@ -10512,12 +10794,7 @@ var _ymtszw$elm_slides$Main$init = function (loc) {
 var _ymtszw$elm_slides$Main$main = A2(
 	_elm_lang$navigation$Navigation$program,
 	_ymtszw$elm_slides$Type$Loc,
-	{
-		init: _ymtszw$elm_slides$Main$init,
-		update: _ymtszw$elm_slides$Main$update,
-		subscriptions: _elm_lang$core$Basics$always(_elm_lang$core$Platform_Sub$none),
-		view: _ymtszw$elm_slides$View$view
-	})();
+	{init: _ymtszw$elm_slides$Main$init, update: _ymtszw$elm_slides$Main$update, subscriptions: _ymtszw$elm_slides$Main$subscriptions, view: _ymtszw$elm_slides$View$view})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
