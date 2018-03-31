@@ -3,7 +3,6 @@ module View exposing (view)
 import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Markdown
 import Type exposing (..)
@@ -20,7 +19,7 @@ view ({ index } as model) =
                         List.map
                             (\filename ->
                                 li []
-                                    [ a [ onClick (OpenFile filename) ]
+                                    [ a [ href ("#" ++ filename) ]
                                         [ text (String.dropRight 3 filename) ]
                                     ]
                             )
@@ -44,9 +43,9 @@ view ({ index } as model) =
 rendered : Model -> Html Msg
 rendered { current, cursor } =
     case current of
-        Just ( _, contents ) ->
+        Just ( filename, contents ) ->
             div [ class "reveal" ]
-                [ locator (List.length contents) cursor
+                [ locator (List.length contents) filename cursor
                 , div [ class "slides" ] (List.indexedMap (page cursor) contents)
                 ]
 
@@ -54,31 +53,38 @@ rendered { current, cursor } =
             div [ class "reveal" ] [ text "Loading..." ]
 
 
-locator : Int -> Int -> Html Msg
-locator max cursor =
+locator : Int -> String -> Int -> Html Msg
+locator max filename cursor =
     nav
         [ class "pagination is-centered"
         , attribute "role" "navigation"
         , attribute "aria-label" "pagination"
         ]
-        [ button (withDisabled (cursor <= 0) [ class "pagination-previous", onClick (CursorTo (cursor - 1)) ])
+        [ locatorButton (cursor <= 0)
+            filename
+            cursor
+            [ class "pagination-previous" ]
             [ i [ class "fa fa-chevron-left" ] [] ]
         , span [ class "pagination-list" ]
+            -- Use 1-based index in view
             [ text (toString (cursor + 1))
             , text "/"
             , text (toString max)
             ]
-        , button (withDisabled (cursor >= max - 1) [ class "pagination-next", onClick (CursorTo (cursor + 1)) ])
+        , locatorButton (cursor >= max - 1)
+            filename
+            (cursor + 2)
+            [ class "pagination-next" ]
             [ i [ class "fa fa-chevron-right" ] [] ]
         ]
 
 
-withDisabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg)
-withDisabled disabled_ others =
+locatorButton : Bool -> String -> Int -> List (Html.Attribute msg) -> List (Html msg) -> Html msg
+locatorButton disabled_ filename toCursor others children =
     if disabled_ then
-        attribute "disabled" "disabled" :: others
+        span (attribute "disabled" "disabled" :: others) children
     else
-        others
+        a ((href ("#" ++ filename ++ "/" ++ toString toCursor)) :: others) children
 
 
 page : Int -> Int -> String -> Html Msg
