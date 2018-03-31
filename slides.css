@@ -26,9 +26,8 @@
   color: dimgray;
 }
 
-.reveal section.list-to-left ul {
-  float: left;
-  max-width: 50%;
+.reveal img {
+  width: 100%;
 }
 
 .reveal .slide-background.present {
