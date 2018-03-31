@@ -24,6 +24,15 @@ view model =
                                     ]
                             )
                             slideList
+                    , p [ class "menu-label" ] [ text "SOURCE" ]
+                    , ul [ class "menu-list" ]
+                        [ li []
+                            [ a [ href "https://github.com/ymtszw/elm-slides" ]
+                                [ i [ class "fab fa-github" ] []
+                                , text "ymtszw/elm-slides"
+                                ]
+                            ]
+                        ]
                     ]
                 , div [ class "column is-10" ] [ rendered model ]
                 ]

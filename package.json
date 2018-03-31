@@ -12,7 +12,7 @@
     "http-server": "^0.10.0"
   },
   "scripts": {
-    "build": "elm-make src/Main.elm --warn --debug --output index.js",
+    "build": "elm-make src/Main.elm --warn --output index.js",
     "start": "http-server -p 7070 ."
   }
 }
