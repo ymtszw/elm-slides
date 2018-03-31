@@ -9314,15 +9314,6 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _ymtszw$elm_slides$Type$slideList = {
-	ctor: '::',
-	_0: 'README.md',
-	_1: {
-		ctor: '::',
-		_0: 'delightful_elm.md',
-		_1: {ctor: '[]'}
-	}
-};
 var _ymtszw$elm_slides$Type$Model = F3(
 	function (a, b, c) {
 		return {index: a, current: b, cursor: c};
@@ -9542,7 +9533,8 @@ var _ymtszw$elm_slides$View$rendered = function (_p0) {
 			});
 	}
 };
-var _ymtszw$elm_slides$View$view = function (model) {
+var _ymtszw$elm_slides$View$view = function (_p5) {
+	var _p6 = _p5;
 	return A2(
 		_elm_lang$html$Html$section,
 		{
@@ -9625,7 +9617,7 @@ var _ymtszw$elm_slides$View$view = function (model) {
 															_1: {ctor: '[]'}
 														});
 												},
-												_ymtszw$elm_slides$Type$slideList)),
+												_elm_lang$core$Dict$keys(_p6.index))),
 										_1: {
 											ctor: '::',
 											_0: A2(
@@ -9699,7 +9691,7 @@ var _ymtszw$elm_slides$View$view = function (model) {
 									},
 									{
 										ctor: '::',
-										_0: _ymtszw$elm_slides$View$rendered(model),
+										_0: _ymtszw$elm_slides$View$rendered(_p6),
 										_1: {ctor: '[]'}
 									}),
 								_1: {ctor: '[]'}
@@ -9766,7 +9758,7 @@ var _ymtszw$elm_slides$Main$update = F2(
 			case 'OpenFile':
 				var _p8 = _p4._0;
 				var _p7 = A2(_elm_lang$core$Dict$get, _p8, _p9);
-				if (_p7.ctor === 'Just') {
+				if ((_p7.ctor === 'Just') && (_p7._0.ctor === '::')) {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -9797,7 +9789,28 @@ var _ymtszw$elm_slides$Main$update = F2(
 	});
 var _ymtszw$elm_slides$Main$init = {
 	ctor: '_Tuple2',
-	_0: {index: _elm_lang$core$Dict$empty, current: _elm_lang$core$Maybe$Nothing, cursor: 0},
+	_0: {
+		index: _elm_lang$core$Dict$fromList(
+			{
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'README.md',
+					_1: {ctor: '[]'}
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'delightful_elm.md',
+						_1: {ctor: '[]'}
+					},
+					_1: {ctor: '[]'}
+				}
+			}),
+		current: _elm_lang$core$Maybe$Nothing,
+		cursor: 0
+	},
 	_1: _ymtszw$elm_slides$Main$getMarkdownFile('README.md')
 };
 var _ymtszw$elm_slides$Main$main = _elm_lang$html$Html$program(

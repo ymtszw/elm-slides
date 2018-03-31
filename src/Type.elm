@@ -4,13 +4,6 @@ import Dict exposing (Dict)
 import Http
 
 
-slideList : List String
-slideList =
-    [ "README.md"
-    , "delightful_elm.md"
-    ]
-
-
 type Msg
     = NoOp
     | ClientRes (Result Http.Error Success)

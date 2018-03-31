@@ -1,5 +1,6 @@
 module View exposing (view)
 
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -9,7 +10,7 @@ import Type exposing (..)
 
 
 view : Model -> Html Msg
-view model =
+view ({ index } as model) =
     section [ class "section" ]
         [ div [ class "container is-fluid is-fullhd" ]
             [ div [ class "columns" ]
@@ -23,7 +24,7 @@ view model =
                                         [ text (String.dropRight 3 filename) ]
                                     ]
                             )
-                            slideList
+                            (Dict.keys index)
                     , p [ class "menu-label" ] [ text "SOURCE" ]
                     , ul [ class "menu-list" ]
                         [ li []

@@ -10,7 +10,11 @@ import View
 
 init : ( Model, Cmd Msg )
 init =
-    ( { index = Dict.empty
+    ( { index =
+            Dict.fromList
+                [ ( "README.md", [] )
+                , ( "delightful_elm.md", [] )
+                ]
       , current = Nothing
       , cursor = 0
       }
@@ -54,7 +58,7 @@ update msg ({ index } as model) =
 
         OpenFile filename ->
             case Dict.get filename index of
-                Just contents ->
+                Just ((_ :: _) as contents) ->
                     ( { model
                         | current = Just ( filename, contents )
                         , cursor = 0
@@ -62,7 +66,7 @@ update msg ({ index } as model) =
                     , Cmd.none
                     )
 
-                Nothing ->
+                _ ->
                     ( model, getMarkdownFile filename )
 
         CursorTo int ->
