@@ -102,7 +102,7 @@ Slide link: https://ymtszw.github.io/elm-slides/#screenshot_crawler.md
       冗長な`await`を書いてるところがある気がするのだが、そのへんあまり詳しく調べていない
     - だれかPullRequest下さい
 
-```js
+```javascript
 const puppeteer = require('puppeteer')
 
 const takeSS = async (browser, url) => {
@@ -135,7 +135,7 @@ const screenshotPage = async (page, url) => {
 
 - GitHub/GistやQiitaのページの場合のみ、ちょっとだけ以下のような工夫を入れてある
 
-```js
+```javascript
 const handleQiitaPage = async (page) => {
   const slideElement = await page.$('.slide')
   if (slideElement) {
@@ -169,7 +169,7 @@ const handleGitHubPage = async (page) => {
   インスタンス。こいつがいわばブラウザ部分の実体なので、当然起動遅いしメモリをたくさん食うはず
 - 従ってこいつを複数インスタンス起動するのは避けるべきで、ひとつのインスタンスを（ちょうどタブブラウジングするように）使い回すべき
 
-```js
+```javascript
 const withBrowser = async (fun) => {
   const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']})
   process.on('error', () => browser.close())
@@ -221,7 +221,7 @@ const withBrowser = async (fun) => {
     - `Promise`によってこれがもうちょっといい感じに抽象化されてわかりやすくなってる（はず）
 - 複数の(`Promise`を返す)処理を並列実行し、すべての終了(あるいは最初の失敗)を待ち合わせるのは`Promise.all()`を使う
 
-```js
+```javascript
 const materials = await client.listMaterials()
 Promise.all(materials.map(takeSS(browser)))
 ```
@@ -240,7 +240,7 @@ Promise.all(materials.map(takeSS(browser)))
     - `Array.prototype.chunk()`とかあればいいんだけど。。。ないので自作
     - Lodashとか入れてればなんかあるはず
 
-```js
+```javascript
 const maxPromises = parseInt(process.env.MAX_PROMISES) || 3
 
 const main = async () => {
