@@ -1,3 +1,7 @@
+html {
+  background-color: rgba(31, 31, 31, 0.1);
+}
+
 .reveal {
   font-size: 32px;
 }
@@ -39,13 +43,27 @@
 }
 
 .reveal .slides {
-  margin-top: .25rem;
-  overflow: hidden;
+  position: relative;
+  width: auto;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: scroll;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.reveal .slides:before {
+  content: "";
+  display: block;
+  padding-top: 56.25%;
 }
 
 .reveal .slides .slide {
-  min-height: 50vh;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
 }
 
 .reveal .slides .slide.is-active {
