@@ -49,6 +49,9 @@ navbar { index, navOpen } =
                                     [ text (String.dropRight 3 filename) ]
                     ]
                 ]
+            , div [ class "navbar-end" ]
+                [ a [ class "navbar-item", onClick (RequestFullscreen ".reveal .slides") ] [ i [ class "fa fa-2x fa-expand" ] [] ]
+                ]
             ]
         ]
 
@@ -66,8 +69,8 @@ rendered { current, cursor } =
     case current of
         Just ( filename, contents ) ->
             div [ class "reveal" ]
-                [ locator (List.length contents) filename cursor
-                , div [ class "slides" ] (List.indexedMap (page cursor) contents)
+                [ div [ class "slides", id "slides" ] (List.indexedMap (page cursor) contents)
+                , locator (List.length contents) filename cursor
                 ]
 
         Nothing ->

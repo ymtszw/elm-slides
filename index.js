@@ -10079,6 +10079,10 @@ var _ymtszw$elm_slides$Type$Model = F4(
 	function (a, b, c, d) {
 		return {index: a, current: b, cursor: c, navOpen: d};
 	});
+var _ymtszw$elm_slides$Type$ExitFullscreen = {ctor: 'ExitFullscreen'};
+var _ymtszw$elm_slides$Type$RequestFullscreen = function (a) {
+	return {ctor: 'RequestFullscreen', _0: a};
+};
 var _ymtszw$elm_slides$Type$ClientRes = function (a) {
 	return {ctor: 'ClientRes', _0: a};
 };
@@ -10123,6 +10127,16 @@ var _ymtszw$elm_slides$Ports$setTitle = _elm_lang$core$Native_Platform.outgoingP
 	'setTitle',
 	function (v) {
 		return v;
+	});
+var _ymtszw$elm_slides$Ports$requestFullscreen = _elm_lang$core$Native_Platform.outgoingPort(
+	'requestFullscreen',
+	function (v) {
+		return v;
+	});
+var _ymtszw$elm_slides$Ports$exitFullscreen = _elm_lang$core$Native_Platform.outgoingPort(
+	'exitFullscreen',
+	function (v) {
+		return null;
 	});
 
 var _ymtszw$elm_slides$Router$fileAndCursor = function (hash) {
@@ -10358,24 +10372,28 @@ var _ymtszw$elm_slides$View$rendered = function (_p0) {
 			},
 			{
 				ctor: '::',
-				_0: A3(
-					_ymtszw$elm_slides$View$locator,
-					_elm_lang$core$List$length(_p3),
-					_p2._0._0,
-					_p4),
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('slides'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$id('slides'),
+							_1: {ctor: '[]'}
+						}
+					},
+					A2(
+						_elm_lang$core$List$indexedMap,
+						_ymtszw$elm_slides$View$page(_p4),
+						_p3)),
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('slides'),
-							_1: {ctor: '[]'}
-						},
-						A2(
-							_elm_lang$core$List$indexedMap,
-							_ymtszw$elm_slides$View$page(_p4),
-							_p3)),
+					_0: A3(
+						_ymtszw$elm_slides$View$locator,
+						_elm_lang$core$List$length(_p3),
+						_p2._0._0,
+						_p4),
 					_1: {ctor: '[]'}
 				}
 			});
@@ -10578,7 +10596,45 @@ var _ymtszw$elm_slides$View$navbar = function (_p5) {
 									}),
 								_1: {ctor: '[]'}
 							}),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('navbar-end'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$a,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('navbar-item'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onClick(
+													_ymtszw$elm_slides$Type$RequestFullscreen('.reveal .slides')),
+												_1: {ctor: '[]'}
+											}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$i,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('fa fa-2x fa-expand'),
+													_1: {ctor: '[]'}
+												},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}),
 				_1: {ctor: '[]'}
 			}
@@ -10621,6 +10677,9 @@ var _ymtszw$elm_slides$View$view = function (model) {
 		});
 };
 
+var _ymtszw$elm_slides$Main$bindExitFullscreen = function (code) {
+	return _elm_lang$core$Native_Utils.eq(code, 27) ? _elm_lang$core$Maybe$Just(_ymtszw$elm_slides$Type$ExitFullscreen) : _elm_lang$core$Maybe$Nothing;
+};
 var _ymtszw$elm_slides$Main$backwardKeys = {
 	ctor: '::',
 	_0: 37,
@@ -10693,26 +10752,25 @@ var _ymtszw$elm_slides$Main$foldBinds = F2(
 	});
 var _ymtszw$elm_slides$Main$binds = F3(
 	function (filename, max, cursor) {
-		return (_elm_lang$core$Native_Utils.cmp(cursor, 0) < 1) ? _ymtszw$elm_slides$Main$foldBinds(
-			{
-				ctor: '::',
-				_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor + 2, _ymtszw$elm_slides$Main$forwardKeys),
-				_1: {ctor: '[]'}
-			}) : ((_elm_lang$core$Native_Utils.cmp(cursor, max - 1) > -1) ? _ymtszw$elm_slides$Main$foldBinds(
-			{
+		var gotoBinds = (_elm_lang$core$Native_Utils.cmp(cursor, 0) < 1) ? {
+			ctor: '::',
+			_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor + 2, _ymtszw$elm_slides$Main$forwardKeys),
+			_1: {ctor: '[]'}
+		} : ((_elm_lang$core$Native_Utils.cmp(cursor, max - 1) > -1) ? {
+			ctor: '::',
+			_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor, _ymtszw$elm_slides$Main$backwardKeys),
+			_1: {ctor: '[]'}
+		} : {
+			ctor: '::',
+			_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor + 2, _ymtszw$elm_slides$Main$forwardKeys),
+			_1: {
 				ctor: '::',
 				_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor, _ymtszw$elm_slides$Main$backwardKeys),
 				_1: {ctor: '[]'}
-			}) : _ymtszw$elm_slides$Main$foldBinds(
-			{
-				ctor: '::',
-				_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor + 2, _ymtszw$elm_slides$Main$forwardKeys),
-				_1: {
-					ctor: '::',
-					_0: A3(_ymtszw$elm_slides$Main$bindGoTo, filename, cursor, _ymtszw$elm_slides$Main$backwardKeys),
-					_1: {ctor: '[]'}
-				}
-			}));
+			}
+		});
+		return _ymtszw$elm_slides$Main$foldBinds(
+			{ctor: '::', _0: _ymtszw$elm_slides$Main$bindExitFullscreen, _1: gotoBinds});
 	});
 var _ymtszw$elm_slides$Main$subscriptions = function (_p2) {
 	var _p3 = _p2;
@@ -10763,13 +10821,26 @@ var _ymtszw$elm_slides$Main$update = F2(
 						{ctor: '_Tuple2', _0: _p10, _1: _elm_lang$core$Platform_Cmd$none},
 						A2(_elm_lang$core$Debug$log, 'Http Error', _p7._0._0));
 				}
-			default:
+			case 'ToggleNav':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						_p10,
 						{navOpen: _p7._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'RequestFullscreen':
+				return {
+					ctor: '_Tuple2',
+					_0: _p10,
+					_1: _ymtszw$elm_slides$Ports$requestFullscreen(_p7._0)
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _p10,
+					_1: _ymtszw$elm_slides$Ports$exitFullscreen(
+						{ctor: '_Tuple0'})
 				};
 		}
 	});
@@ -10790,7 +10861,15 @@ var _ymtszw$elm_slides$Main$init = function (loc) {
 						_0: 'delightful_elm.md',
 						_1: {ctor: '[]'}
 					},
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'screenshot_crawler.md',
+							_1: {ctor: '[]'}
+						},
+						_1: {ctor: '[]'}
+					}
 				}
 			}),
 		current: _elm_lang$core$Maybe$Nothing,

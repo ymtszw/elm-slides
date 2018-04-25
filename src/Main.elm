@@ -17,6 +17,7 @@ init loc =
                 Dict.fromList
                     [ ( "README.md", [] )
                     , ( "delightful_elm.md", [] )
+                    , ( "screenshot_crawler.md", [] )
                     ]
             , current = Nothing
             , cursor = 0
@@ -52,6 +53,12 @@ update msg ({ index } as model) =
         ToggleNav navOpen ->
             ( { model | navOpen = navOpen }, Cmd.none )
 
+        RequestFullscreen selector ->
+            ( model, Ports.requestFullscreen selector )
+
+        ExitFullscreen ->
+            ( model, Ports.exitFullscreen () )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions { current, cursor } =
@@ -69,15 +76,18 @@ subscriptions { current, cursor } =
 
 binds : String -> Int -> Int -> KeyCode -> Msg
 binds filename max cursor =
-    if cursor <= 0 then
-        foldBinds [ bindGoTo filename (cursor + 2) forwardKeys ]
-    else if cursor >= max - 1 then
-        foldBinds [ bindGoTo filename cursor backwardKeys ]
-    else
-        foldBinds
-            [ bindGoTo filename (cursor + 2) forwardKeys
-            , bindGoTo filename cursor backwardKeys
-            ]
+    let
+        gotoBinds =
+            if cursor <= 0 then
+                [ bindGoTo filename (cursor + 2) forwardKeys ]
+            else if cursor >= max - 1 then
+                [ bindGoTo filename cursor backwardKeys ]
+            else
+                [ bindGoTo filename (cursor + 2) forwardKeys
+                , bindGoTo filename cursor backwardKeys
+                ]
+    in
+        foldBinds (bindExitFullscreen :: gotoBinds)
 
 
 foldBinds : List (KeyCode -> Maybe Msg) -> KeyCode -> Msg
@@ -119,6 +129,14 @@ backwardKeys =
     , 72 -- H
     , 75 -- K
     ]
+
+
+bindExitFullscreen : KeyCode -> Maybe Msg
+bindExitFullscreen code =
+    if code == 27 then
+        Just ExitFullscreen
+    else
+        Nothing
 
 
 main : Program Never Model Msg

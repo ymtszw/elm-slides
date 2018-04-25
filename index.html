@@ -20,6 +20,17 @@
       app.ports.setTitle.subscribe(function(title) {
         document.title = title + ' | ymtszw/elm-slides'
       })
+      app.ports.requestFullscreen.subscribe(function(selector) {
+        elem = document.querySelector(selector)
+        if (elem.requestFullscreen) { elem.requestFullscreen() } else
+        if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen() } else
+        if (elem.mozRequestFullScreen) { elem.mozRequestFullScreen() }
+      })
+      app.ports.exitFullscreen.subscribe(function() {
+        if (elem.exitFullscreen) { elem.exitFullscreen() } else
+        if (elem.webkitExitFullscreen) { elem.webkitExitFullscreen() } else
+        if (elem.mozCancelFullScreen) { elem.mozCancelFullScreen() }
+      })
     </script>
   </body>
 </html>

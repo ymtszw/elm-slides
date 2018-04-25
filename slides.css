@@ -44,12 +44,19 @@ html {
 
 .reveal .slides {
   position: relative;
-  width: auto;
-  max-width: 1600px;
+  width: 100%;
+  max-width: 90vw;
   margin-left: auto;
   margin-right: auto;
   overflow: scroll;
   background-color: rgba(255, 255, 255, 1);
+}
+
+/* HACK pseudo-class :-webkit-full-screen somehow not working. Needs investigation */
+:-webkit-full-screen-ancestor .reveal .slides {
+  width: 100%;
+  max-width: none;
+  font-size: 150%;
 }
 
 .reveal .slides:before {
