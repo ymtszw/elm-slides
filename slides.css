@@ -3,6 +3,7 @@ html {
 }
 
 .reveal {
+  margin: 3rem 0;
   font-size: calc(8px + 2vw);
 }
 
@@ -53,6 +54,12 @@ html {
   margin-right: auto;
   overflow: scroll;
   background-color: rgba(255, 255, 255, 1);
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .reveal .slides {
+    max-width: none;
+  }
 }
 
 /* HACK pseudo-class :-webkit-full-screen somehow not working. Needs investigation */

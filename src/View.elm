@@ -14,7 +14,7 @@ view model =
     div []
         [ navbar model
         , section
-            [ class "section" ]
+            []
             [ div [ class "container is-fluid is-fullhd" ]
                 [ rendered model
                 ]
