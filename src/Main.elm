@@ -56,9 +56,6 @@ update msg ({ index } as model) =
         RequestFullscreen selector ->
             ( model, Ports.requestFullscreen selector )
 
-        ExitFullscreen ->
-            ( model, Ports.exitFullscreen () )
-
 
 subscriptions : Model -> Sub Msg
 subscriptions { current, cursor } =
@@ -87,7 +84,7 @@ binds filename max cursor =
                 , bindGoTo filename cursor backwardKeys
                 ]
     in
-        foldBinds (bindExitFullscreen :: gotoBinds)
+        foldBinds gotoBinds
 
 
 foldBinds : List (KeyCode -> Maybe Msg) -> KeyCode -> Msg
@@ -129,14 +126,6 @@ backwardKeys =
     , 72 -- H
     , 75 -- K
     ]
-
-
-bindExitFullscreen : KeyCode -> Maybe Msg
-bindExitFullscreen code =
-    if code == 27 then
-        Just ExitFullscreen
-    else
-        Nothing
 
 
 main : Program Never Model Msg

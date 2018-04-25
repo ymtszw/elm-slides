@@ -10079,7 +10079,6 @@ var _ymtszw$elm_slides$Type$Model = F4(
 	function (a, b, c, d) {
 		return {index: a, current: b, cursor: c, navOpen: d};
 	});
-var _ymtszw$elm_slides$Type$ExitFullscreen = {ctor: 'ExitFullscreen'};
 var _ymtszw$elm_slides$Type$RequestFullscreen = function (a) {
 	return {ctor: 'RequestFullscreen', _0: a};
 };
@@ -10132,11 +10131,6 @@ var _ymtszw$elm_slides$Ports$requestFullscreen = _elm_lang$core$Native_Platform.
 	'requestFullscreen',
 	function (v) {
 		return v;
-	});
-var _ymtszw$elm_slides$Ports$exitFullscreen = _elm_lang$core$Native_Platform.outgoingPort(
-	'exitFullscreen',
-	function (v) {
-		return null;
 	});
 
 var _ymtszw$elm_slides$Router$fileAndCursor = function (hash) {
@@ -10651,11 +10645,7 @@ var _ymtszw$elm_slides$View$view = function (model) {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$section,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('section'),
-						_1: {ctor: '[]'}
-					},
+					{ctor: '[]'},
 					{
 						ctor: '::',
 						_0: A2(
@@ -10677,9 +10667,6 @@ var _ymtszw$elm_slides$View$view = function (model) {
 		});
 };
 
-var _ymtszw$elm_slides$Main$bindExitFullscreen = function (code) {
-	return _elm_lang$core$Native_Utils.eq(code, 27) ? _elm_lang$core$Maybe$Just(_ymtszw$elm_slides$Type$ExitFullscreen) : _elm_lang$core$Maybe$Nothing;
-};
 var _ymtszw$elm_slides$Main$backwardKeys = {
 	ctor: '::',
 	_0: 37,
@@ -10769,8 +10756,7 @@ var _ymtszw$elm_slides$Main$binds = F3(
 				_1: {ctor: '[]'}
 			}
 		});
-		return _ymtszw$elm_slides$Main$foldBinds(
-			{ctor: '::', _0: _ymtszw$elm_slides$Main$bindExitFullscreen, _1: gotoBinds});
+		return _ymtszw$elm_slides$Main$foldBinds(gotoBinds);
 	});
 var _ymtszw$elm_slides$Main$subscriptions = function (_p2) {
 	var _p3 = _p2;
@@ -10829,18 +10815,11 @@ var _ymtszw$elm_slides$Main$update = F2(
 						{navOpen: _p7._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'RequestFullscreen':
-				return {
-					ctor: '_Tuple2',
-					_0: _p10,
-					_1: _ymtszw$elm_slides$Ports$requestFullscreen(_p7._0)
-				};
 			default:
 				return {
 					ctor: '_Tuple2',
 					_0: _p10,
-					_1: _ymtszw$elm_slides$Ports$exitFullscreen(
-						{ctor: '_Tuple0'})
+					_1: _ymtszw$elm_slides$Ports$requestFullscreen(_p7._0)
 				};
 		}
 	});

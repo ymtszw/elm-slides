@@ -12,7 +12,6 @@ type Msg
     | ToggleNav Bool
     | ClientRes (Result Http.Error Success)
     | RequestFullscreen String
-    | ExitFullscreen
 
 
 type Success

@@ -1,10 +1,7 @@
-port module Ports exposing (setTitle, requestFullscreen, exitFullscreen)
+port module Ports exposing (setTitle, requestFullscreen)
 
 
 port setTitle : String -> Cmd msg
 
 
 port requestFullscreen : String -> Cmd msg
-
-
-port exitFullscreen : () -> Cmd msg
