@@ -3,24 +3,27 @@ html {
 }
 
 .reveal {
-  font-size: 32px;
+  font-size: calc(8px + 2vw);
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   font-family: Impact, sans-serif;
-  margin-top: 2rem;
+  margin-top: 1em;
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6, .reveal p {
   text-align: center;
 }
 
+.reveal h1 { font-size: 1.3em; }
+.reveal h2 { font-size: 1.2em; }
+
 .reveal blockquote p {
   text-align: left;
 }
 
 .reveal ul {
-  font-size: 90%;
+  font-size: 0.85em;
 }
 
 .reveal code {
@@ -56,7 +59,13 @@ html {
 :-webkit-full-screen-ancestor .reveal .slides {
   width: 100%;
   max-width: none;
-  font-size: 150%;
+}
+
+:-webkit-full-screen .reveal .slides,
+:-moz-full-screen .reveal .slides,
+:fullscreen .reveal .slides {
+  width: 100%;
+  max-width: none;
 }
 
 .reveal .slides:before {
